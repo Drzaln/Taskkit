@@ -1,12 +1,32 @@
+import { StackNavigationProp } from "@react-navigation/stack";
+import { StatusBar } from "expo-status-bar";
 import * as React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import { FullRound } from "../../components/Headers";
+import ActionButton from "../../components/ActionButton";
 import constants from "../../constants/constant";
 import store from "../../Redux/store";
 
-export default function Home() {
-  return <Header />;
+interface HomeProps {
+  navigation: StackNavigationProp<any>;
+}
+
+export default function Home({ navigation: navProps }: HomeProps) {
+  navProps.navigate;
+  return (
+    <>
+      <ActionButton
+        firstAction={() => {
+          navProps.navigate("Add Task");
+        }}
+        secondAction={() => {
+          navProps.navigate("Add Task List");
+        }}
+      />
+      <StatusBar backgroundColor={"#317579"} translucent={true} />
+      <Header />
+    </>
+  );
 }
 
 const Header = () => {
@@ -20,7 +40,7 @@ const Header = () => {
           <View style={{ display: "flex" }}>
             <Text style={headerStyles.textNormal}>Good morning</Text>
             <Text style={headerStyles.title}>
-              {name.TaskReducer.profile.name}
+              {/* {name.TaskReducer.profile.name} */}
             </Text>
             <Text style={headerStyles.textLight}>3 Tasks for the day</Text>
           </View>

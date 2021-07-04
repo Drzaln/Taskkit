@@ -14,6 +14,10 @@ type textProps = {
   multiline?: boolean;
   numberOfLines?: number;
   style?: ViewStyle;
+  value: {
+    value: string;
+    setValue: React.Dispatch<React.SetStateAction<string>>;
+  };
 };
 
 export const TextForm = ({
@@ -22,6 +26,7 @@ export const TextForm = ({
   multiline = false,
   numberOfLines = 1,
   style = {},
+  value,
 }: textProps) => {
   return (
     <TextInput
@@ -30,19 +35,30 @@ export const TextForm = ({
       numberOfLines={numberOfLines}
       style={[styles.input, style]}
       textAlign={"left"}
+      onChangeText={(e) => {
+        value.setValue(e);
+      }}
     />
   );
 };
 
 interface dateProps {
   color: string;
+  enabled: boolean;
   date: Date;
   mode: "date" | "time";
   setDate: Dispatch<SetStateAction<Date>>;
   style?: ViewStyle;
 }
 
-export const DateForm = ({ color, date, setDate, mode, style }: dateProps) => {
+export const DateForm = ({
+  color,
+  enabled,
+  date,
+  setDate,
+  mode,
+  style,
+}: dateProps) => {
   const [show, setShow] = React.useState(false);
 
   const onChange = (event: any, selectedDate: any) => {
@@ -56,7 +72,7 @@ export const DateForm = ({ color, date, setDate, mode, style }: dateProps) => {
     <RectButton
       style={[styles.dateInput, style]}
       onPress={() => {
-        setShow(true);
+        enabled && setShow(true);
       }}
     >
       <Text style={{ color: color, fontSize: 16 }}>

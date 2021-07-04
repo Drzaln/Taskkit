@@ -5,11 +5,12 @@ import { Text } from "react-native-svg";
 import constants from "../../constants/constant";
 export default function Calendars() {
   return (
-    <View style={{ backgroundColor: "#317579", paddingTop: 30, flex: 1 }}>
+    <ScrollView
+      style={{ backgroundColor: "#317579", paddingTop: 30 }}
+      contentContainerStyle={{ flex: 1 }}
+    >
       <View style={styles.calendarContainer}>
         <Calendar
-          // Collection of dates that have to be marked. Default = {}
-
           theme={{
             backgroundColor: "#317579",
             calendarBackground: "#317579",
@@ -31,7 +32,7 @@ export default function Calendars() {
       <View style={styles.agenda}>
         <View style={styles.thumb} />
       </View>
-    </View>
+    </ScrollView>
   );
 }
 
@@ -45,10 +46,10 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   thumb: {
+    alignSelf: "center",
     marginBottom: 70,
-    marginHorizontal: "auto",
-    width: 36,
-    height: 3,
+    width: 40,
+    height: 4,
     backgroundColor: "#C4C4C4",
     borderRadius: 2,
   },

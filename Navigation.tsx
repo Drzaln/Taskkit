@@ -1,26 +1,60 @@
-import { AntDesign, Feather } from "@expo/vector-icons";
-import {
-  BottomTabBarOptions,
-  BottomTabBarProps,
-  createBottomTabNavigator,
-} from "@react-navigation/bottom-tabs";
+import { AntDesign, Feather, Ionicons } from "@expo/vector-icons";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import * as React from "react";
-import { View } from "react-native";
 import { StyleSheet } from "react-native";
-import {
-  RectButton,
-  TouchableWithoutFeedback,
-} from "react-native-gesture-handler";
+import { TouchableWithoutFeedback } from "react-native-gesture-handler";
+import constants from "./constants/constant";
 import AddTask from "./screens/stack/AddTask";
+import AddTaskList from "./screens/stack/AddTaskList";
 import Calendars from "./screens/Tabs/Calendar";
 import Home from "./screens/Tabs/Home";
 import MyDay from "./screens/Tabs/MyDay";
 import Profile from "./screens/Tabs/Profile";
-interface NavigationProps {}
+
+const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
+interface HomePageProps {
+  screen: any;
+}
+const StackPage = ({ screen }: HomePageProps) => {
+  return (
+    <Stack.Navigator
+      initialRouteName="Main"
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: "#317579",
+        },
+        headerTintColor: "#fff",
+        headerTitleStyle: {
+          fontFamily: "Gilroy-Bold",
+        },
+      }}
+    >
+      <Stack.Screen
+        name="Main"
+        component={screen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="Add Task"
+        component={AddTask}
+        options={{
+          headerStyle: {
+            backgroundColor: constants.colors.accentColor,
+          },
+          headerTitle: "Create New Task",
+        }}
+      />
+
+      <Stack.Screen name="Add Task List" component={AddTaskList} />
+    </Stack.Navigator>
+  );
+};
 const Navigation = () => {
   return (
     <NavigationContainer>
@@ -35,29 +69,29 @@ const Navigation = () => {
             position: "absolute",
             height: 64,
           },
+          keyboardHidesTabBar: true,
           showLabel: false,
         }}
-        tabBar={(props) => <TabBarNav props={props} />}
       >
         <Tab.Screen
           name="Home"
-          component={Home}
           options={{
             tabBarIcon: ({ color }) => {
               return <AntDesign name="home" size={26} color={color} />;
             },
           }}
+          children={() => <StackPage screen={Home} />}
         />
         <Tab.Screen
           name="My Day"
-          component={MyDay}
+          children={() => <StackPage screen={MyDay} />}
           options={{
             tabBarIcon: ({ color }) => (
               <Feather name="check-circle" size={26} color={color} />
             ),
           }}
         />
-        {/* <Tab.Screen
+        <Tab.Screen
           name={"Calendar"}
           component={Calendars}
           options={{
@@ -65,8 +99,7 @@ const Navigation = () => {
               <Feather name="calendar" size={26} color={color} />
             ),
           }}
-        /> */}
-        <Tab.Screen name="Add" component={AddTask} />
+        />
         <Tab.Screen
           name={"Profile"}
           component={Profile}
@@ -82,78 +115,6 @@ const Navigation = () => {
 };
 
 export default Navigation;
-
-interface TabBarProps {
-  props: BottomTabBarProps<BottomTabBarOptions>;
-}
-
-const TabBarNav = ({ props: navProps }: TabBarProps) => {
-  // console.log(navProps);
-  const activeTintColor = navProps.activeTintColor;
-  const inactiveTintColor = navProps.inactiveTintColor;
-  const activeTab = navProps.state.index;
-  // console.log(activeTab);
-  return (
-    <View style={styles.container}>
-      <TouchableWithoutFeedback
-        style={styles.add}
-        onPress={() => {
-          navProps.navigation.navigate("Home");
-        }}
-      >
-        <AntDesign
-          name="home"
-          size={26}
-          color={activeTab === 0 ? activeTintColor : inactiveTintColor}
-        />
-      </TouchableWithoutFeedback>
-      <TouchableWithoutFeedback
-        style={styles.add}
-        onPress={() => {
-          navProps.navigation.navigate("My Day");
-        }}
-      >
-        <Feather
-          name="check-circle"
-          size={26}
-          color={activeTab === 1 ? activeTintColor : inactiveTintColor}
-        />
-      </TouchableWithoutFeedback>
-      <RectButton
-        style={styles.button}
-        onPress={() => {
-          navProps.navigation.navigate("Add");
-        }}
-      >
-        <Feather name="plus" size={26} color="white" />
-      </RectButton>
-      <TouchableWithoutFeedback
-        style={styles.add}
-        onPress={() => {
-          navProps.navigation.navigate("Calendar");
-        }}
-      >
-        <Feather
-          name="calendar"
-          size={26}
-          color={activeTab === 2 ? activeTintColor : inactiveTintColor}
-        />
-      </TouchableWithoutFeedback>
-      <TouchableWithoutFeedback
-        style={styles.add}
-        onPress={() => {
-          navProps.navigation.navigate("Profile");
-        }}
-      >
-        <Feather
-          name="user"
-          size={26}
-          color={activeTab === 3 ? activeTintColor : inactiveTintColor}
-        />
-      </TouchableWithoutFeedback>
-    </View>
-  );
-};
 
 const styles = StyleSheet.create({
   container: {

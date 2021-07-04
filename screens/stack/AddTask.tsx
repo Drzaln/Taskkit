@@ -1,22 +1,69 @@
+import { StackNavigationProp } from "@react-navigation/stack";
 import * as React from "react";
-import { StyleSheet, Text, View, TextInput } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
-import { FullRound } from "../../components/Headers";
-import { useSelector } from "react-redux";
-import { RootState } from "../../Redux/store";
-import { TextForm, DateForm } from "../../components/Forms";
-import constants from "../../constants/constant";
+import { StyleSheet, Text, View } from "react-native";
 import { RectButton } from "react-native-gesture-handler";
-import { Entypo } from "@expo/vector-icons";
-export default function AddTask() {
+import { ScrollView, Switch } from "react-native-gesture-handler";
+import { useDispatch } from "react-redux";
+import ActionButton from "../../components/ActionButton";
+import { DateForm, TextForm } from "../../components/Forms";
+import constants from "../../constants/constant";
+import { ADD_TASK } from "../../Redux/TaskReducer";
+import { Feather } from "@expo/vector-icons";
+interface AddTaskProps {
+  navigation: StackNavigationProp<any>;
+}
+
+export default function AddTask({ navigation: navProps }: AddTaskProps) {
+  React.useEffect(
+    () =>
+      navProps.setOptions({
+        headerRight: () => (
+          <RectButton
+            style={{
+              padding: 9,
+              marginHorizontal: 20,
+              justifyContent: "center",
+              alignItems: "center",
+              borderRadius: 30,
+            }}
+            onPress={() => {
+              storeData();
+            }}
+          >
+            <Feather name={"check"} color={"white"} size={25} />
+          </RectButton>
+        ),
+      }),
+    []
+  );
   const [date, setDate] = React.useState(new Date());
+  const [dateSwitch, setDateSwitch] = React.useState(false);
+  const [name, setName] = React.useState<string>("");
+  const [description, setDescription] = React.useState<string>("");
+  const dispatch = useDispatch();
+  const storeData = () => {
+    if (name.length !== 0) {
+      const taskData = {
+        name: name,
+        description: description,
+        date: dateSwitch ? date : null,
+        taskListId: 0,
+      };
+      dispatch(ADD_TASK(taskData));
+      navProps.goBack();
+    } else {
+      alert("Add name");
+    }
+  };
   return (
-    <View
-      style={{ backgroundColor: constants.colors.backgroundColor, flex: 1 }}
+    <ScrollView
+      style={{
+        backgroundColor: constants.colors.backgroundColor,
+      }}
+      alwaysBounceHorizontal={true}
     >
       <View style={styles.header}>
-        <View style={{ display: "flex", marginTop: 35 }}>
-          <Text style={styles.title}>Create New Task</Text>
+        <View style={{ display: "flex" }}>
           <Text style={styles.textLight}>Name</Text>
 
           <TextForm
@@ -25,12 +72,22 @@ export default function AddTask() {
               marginBottom: 15,
               backgroundColor: "rgba(255,255,255,0.3)",
             }}
+            value={{ value: name, setValue: setName }}
           />
           <Text style={styles.textLight}>Due date</Text>
-
+          <Switch
+            style={{ width: 30, paddingHorizontal: 20, paddingVertical: 10 }}
+            value={dateSwitch}
+            thumbColor={"white"}
+            trackColor={{ false: "white", true: "black" }}
+            onActivated={() => {
+              setDateSwitch(!dateSwitch);
+            }}
+          />
           <DateForm
             mode={"date"}
             color={"#fff"}
+            enabled={dateSwitch}
             date={date}
             setDate={setDate}
           />
@@ -48,22 +105,23 @@ export default function AddTask() {
           date={date}
           setDate={setDate}
           color={"white"}
+          enabled={dateSwitch}
           mode={"time"}
           style={{ backgroundColor: "rgba(255,255,255,0.3)", width: 80 }}
         />
         <Text style={[styles.textLight, { color: "white" }]}>Description</Text>
         <TextForm
           color={"#fff"}
+          value={{
+            value: description,
+            setValue: setDescription,
+          }}
           multiline={true}
           numberOfLines={3}
-          style={{ backgroundColor: "rgba(255,255,255,0.3)" }}
+          style={{ backgroundColor: "rgba(255,255,255,0.3)", marginBottom: 30 }}
         />
-
-        <RectButton style={styles.button}>
-          <Entypo name={"plus"} color={"white"} size={34} />
-        </RectButton>
       </View>
-    </View>
+    </ScrollView>
   );
 }
 
