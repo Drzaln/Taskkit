@@ -1,89 +1,110 @@
+import { Feather } from "@expo/vector-icons";
 import { StackNavigationProp } from "@react-navigation/stack";
 import * as React from "react";
-import { StyleSheet, Text, View } from "react-native";
-import { RectButton } from "react-native-gesture-handler";
-import { ScrollView, Switch } from "react-native-gesture-handler";
-import { useDispatch } from "react-redux";
-import ActionButton from "../../components/ActionButton";
-import { DateForm, TextForm } from "../../components/Forms";
+import { Alert, StyleSheet, Text, TextInput, View } from "react-native";
+import {
+  RectButton,
+  ScrollView,
+  Switch,
+  TouchableWithoutFeedback,
+} from "react-native-gesture-handler";
+import { useDispatch, useSelector } from "react-redux";
+import { DateForm } from "../../components/Forms";
 import constants from "../../constants/constant";
+import { RootState } from "../../Redux/store";
 import { ADD_TASK } from "../../Redux/TaskReducer";
-import { Feather } from "@expo/vector-icons";
 interface AddTaskProps {
   navigation: StackNavigationProp<any>;
 }
 
 export default function AddTask({ navigation: navProps }: AddTaskProps) {
-  React.useEffect(
-    () =>
-      navProps.setOptions({
-        headerRight: () => (
-          <RectButton
-            style={{
-              padding: 9,
-              marginHorizontal: 20,
-              justifyContent: "center",
-              alignItems: "center",
-              borderRadius: 30,
-            }}
-            onPress={() => {
-              storeData();
-            }}
-          >
-            <Feather name={"check"} color={"white"} size={25} />
-          </RectButton>
-        ),
-      }),
-    []
-  );
   const [date, setDate] = React.useState(new Date());
   const [dateSwitch, setDateSwitch] = React.useState(false);
   const [name, setName] = React.useState<string>("");
   const [description, setDescription] = React.useState<string>("");
   const dispatch = useDispatch();
-  const storeData = () => {
-    if (name.length !== 0) {
-      const taskData = {
-        name: name,
-        description: description,
-        date: dateSwitch ? date : null,
-        taskListId: 0,
-      };
-      dispatch(ADD_TASK(taskData));
-      navProps.goBack();
-    } else {
-      alert("Add name");
+  const lists = useSelector((state: RootState) => state.TaskReducer.taskList);
+  const [taskListId, setTaskListId] = React.useState(lists[0].taskListId);
+  const [push, setPush] = React.useState(false);
+  React.useEffect(() => {
+    if (push) {
+      if (name.length > 0) {
+        const taskData = {
+          name,
+          description,
+          taskListId,
+          date: dateSwitch ? date.getTime() : undefined,
+        };
+        dispatch(ADD_TASK(taskData));
+        navProps.goBack();
+      } else {
+        Alert.alert("Missing", "The name filed is empty");
+      }
     }
-  };
+  }, [push]);
+  React.useLayoutEffect(
+    () =>
+      navProps.setOptions({
+        headerRight: () => (
+          <View style={{ paddingHorizontal: 20 }}>
+            <RectButton
+              style={{
+                padding: 9,
+                justifyContent: "center",
+                alignItems: "center",
+                borderRadius: 30,
+              }}
+              onPress={() => {
+                setPush(true);
+              }}
+            >
+              <Feather name={"check"} color={"white"} size={25} />
+            </RectButton>
+          </View>
+        ),
+      }),
+    [navProps]
+  );
   return (
     <ScrollView
       style={{
         backgroundColor: constants.colors.backgroundColor,
       }}
-      alwaysBounceHorizontal={true}
     >
       <View style={styles.header}>
         <View style={{ display: "flex" }}>
           <Text style={styles.textLight}>Name</Text>
-
-          <TextForm
-            color={"#fff"}
+          <TextInput
+            value={name}
+            onChangeText={(e) => {
+              setName(e);
+            }}
+            style={styles.input}
+            placeholder={"Name"}
+            placeholderTextColor="rgba(255,255,255,0.7)"
+          />
+          <View
             style={{
-              marginBottom: 15,
-              backgroundColor: "rgba(255,255,255,0.3)",
+              flexDirection: "row",
+              justifyContent: "space-between",
+              marginTop: 20,
+              alignItems: "center",
             }}
-            value={{ value: name, setValue: setName }}
-          />
-          <Text style={styles.textLight}>Due date</Text>
-          <Switch
-            style={{ width: 30, paddingHorizontal: 20, paddingVertical: 10 }}
-            value={dateSwitch}
-            thumbColor={"white"}
-            trackColor={{ false: "white", true: "black" }}
-            onActivated={() => {
-              setDateSwitch(!dateSwitch);
-            }}
-          />
+          >
+            <Text style={[styles.textLight, { opacity: dateSwitch ? 1 : 0.6 }]}>
+              Due date
+            </Text>
+
+            <Switch
+              style={{ width: 30, paddingHorizontal: 20 }}
+              value={dateSwitch}
+              thumbColor={"white"}
+              trackColor={{ false: "white", true: "black" }}
+              onActivated={() => {
+                setDateSwitch(!dateSwitch);
+              }}
+            />
+          </View>
           <DateForm
             mode={"date"}
             color={"#fff"}
@@ -98,28 +119,67 @@ export default function AddTask({ navigation: navProps }: AddTaskProps) {
         style={{
           flex: 1,
           paddingHorizontal: 20,
-          paddingTop: 40,
+          paddingTop: 10,
         }}
       >
+        <Text style={[styles.textLight, { opacity: dateSwitch ? 1 : 0.6 }]}>
+          Time
+        </Text>
         <DateForm
           date={date}
           setDate={setDate}
           color={"white"}
           enabled={dateSwitch}
           mode={"time"}
-          style={{ backgroundColor: "rgba(255,255,255,0.3)", width: 80 }}
+          style={{ width: 80 }}
         />
         <Text style={[styles.textLight, { color: "white" }]}>Description</Text>
-        <TextForm
-          color={"#fff"}
-          value={{
-            value: description,
-            setValue: setDescription,
-          }}
+        <TextInput
+          style={[styles.input, { flexWrap: "wrap", marginBottom: 10 }]}
           multiline={true}
-          numberOfLines={3}
-          style={{ backgroundColor: "rgba(255,255,255,0.3)", marginBottom: 30 }}
+          value={description}
+          onChangeText={(e) => setDescription(e)}
+          placeholder="Description"
+          placeholderTextColor="rgba(255,255,255,0.7)"
         />
+        <Text style={styles.textLight}>Task List</Text>
+        <View
+          style={{ flexDirection: "row", flexWrap: "wrap", paddingTop: 10 }}
+        >
+          {lists.map((list, index) => (
+            <TouchableWithoutFeedback
+              key={index}
+              onPress={() => {
+                setTaskListId(list.taskListId);
+              }}
+            >
+              <View
+                style={[
+                  styles.listContainer,
+                  {
+                    backgroundColor: list.theme.mainColor,
+                    borderColor:
+                      list.taskListId === taskListId
+                        ? list.theme.textColor
+                        : "transparent",
+                    borderWidth: 3,
+                    borderStyle: "solid",
+                  },
+                ]}
+              >
+                <Text
+                  style={{
+                    fontFamily: "Gilroy-Medium",
+                    fontSize: 14,
+                    color: list.theme.textColor,
+                  }}
+                >
+                  {list.name}
+                </Text>
+              </View>
+            </TouchableWithoutFeedback>
+          ))}
+        </View>
       </View>
     </ScrollView>
   );
@@ -137,31 +197,12 @@ const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 20,
   },
-  title: {
-    fontSize: 35,
-    fontFamily: constants.fonts.bold,
-    color: "white",
-    marginBottom: 10,
-  },
   textLight: {
-    fontFamily: constants.fonts.regular,
-    marginTop: 10,
+    fontFamily: constants.fonts.bold,
+    marginTop: 20,
     fontSize: 16,
     marginBottom: 5,
     color: "white",
-  },
-  categoryContainer: {
-    fontSize: 16,
-    marginTop: 10,
-    paddingHorizontal: 20,
-    paddingVertical: 8,
-    marginRight: 15,
-    borderRadius: 15,
-  },
-  category: {
-    marginTop: 20,
-    fontSize: 16,
-    color: "#808080",
   },
 
   button: {
@@ -174,5 +215,22 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 84,
     right: 20,
+  },
+  input: {
+    marginTop: 5,
+    borderBottomWidth: 1,
+    borderBottomColor: "rgba(255,255,255,0.7)",
+    borderStyle: "solid",
+    color: "white",
+    width: 300,
+    paddingHorizontal: 5,
+    fontSize: 17,
+    fontFamily: "Gilroy-Medium",
+  },
+  listContainer: {
+    padding: 6,
+    marginRight: 10,
+    marginBottom: 10,
+    borderRadius: 6,
   },
 });

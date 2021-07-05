@@ -1,10 +1,9 @@
-import { AntDesign, Feather, Ionicons } from "@expo/vector-icons";
+import { AntDesign, Feather } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import * as React from "react";
 import { StyleSheet } from "react-native";
-import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 import constants from "./constants/constant";
 import AddTask from "./screens/stack/AddTask";
 import AddTaskList from "./screens/stack/AddTaskList";

@@ -1,46 +1,10 @@
-import { EnumBooleanMember } from "@babel/types";
-import * as React from "react";
-import { Text } from "react-native";
-import { StyleSheet, TextInput, View, ViewStyle } from "react-native";
+import { Feather } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import * as React from "react";
+import { Dispatch, SetStateAction } from "react";
+import { Platform, StyleSheet, Text, View, ViewStyle } from "react-native";
 import { RectButton } from "react-native-gesture-handler";
-import { SetStateAction } from "react";
-import { Dispatch } from "react";
-import { Platform } from "react-native";
 import constants from "../constants/constant";
-type textProps = {
-  placeholder?: string;
-  color: string;
-  multiline?: boolean;
-  numberOfLines?: number;
-  style?: ViewStyle;
-  value: {
-    value: string;
-    setValue: React.Dispatch<React.SetStateAction<string>>;
-  };
-};
-
-export const TextForm = ({
-  placeholder,
-
-  multiline = false,
-  numberOfLines = 1,
-  style = {},
-  value,
-}: textProps) => {
-  return (
-    <TextInput
-      placeholder={placeholder === undefined ? "" : placeholder}
-      multiline={multiline}
-      numberOfLines={numberOfLines}
-      style={[styles.input, style]}
-      textAlign={"left"}
-      onChangeText={(e) => {
-        value.setValue(e);
-      }}
-    />
-  );
-};
 
 interface dateProps {
   color: string;
@@ -61,52 +25,72 @@ export const DateForm = ({
 }: dateProps) => {
   const [show, setShow] = React.useState(false);
 
-  const onChange = (event: any, selectedDate: any) => {
+  const onChange = (_: any, selectedDate: Date) => {
     const currentDate = selectedDate || date;
     setShow(Platform.OS === "ios");
     setDate(currentDate);
-    console.log(currentDate);
   };
 
   return (
-    <RectButton
-      style={[styles.dateInput, style]}
-      onPress={() => {
-        enabled && setShow(true);
-      }}
-    >
-      <Text style={{ color: color, fontSize: 16 }}>
-        {mode === "date"
-          ? `${date.toUTCString().substring(0, 16)}`
-          : `${date.getHours()}:${date.getMinutes()}`}
-      </Text>
-      {show && (
-        <DateTimePicker
-          value={date}
-          onChange={onChange}
-          mode={mode === "date" ? "date" : "time"}
-        />
-      )}
-    </RectButton>
+    <View pointerEvents={enabled ? "box-none" : "none"}>
+      <RectButton
+        onPress={() => {
+          setShow(true);
+        }}
+        style={
+          style?.width !== undefined ? { width: style?.width } : { width: 155 }
+        }
+      >
+        <View
+          style={[
+            styles.dateInput,
+            style,
+            {
+              opacity: enabled ? 0.7 : 0.3,
+              borderBottomColor: color,
+            },
+          ]}
+        >
+          <Text
+            style={{
+              fontSize: 16,
+              color: color,
+            }}
+          >
+            {mode === "date"
+              ? `${date.toUTCString().substring(0, 16)}`
+              : `${date.getHours()}:${date.getMinutes()}`}
+          </Text>
+          <Feather name={"chevron-down"} size={18} color={color} />
+          {show && (
+            <DateTimePicker
+              value={date}
+              // @ts-ignore
+              onChange={onChange}
+              mode={mode}
+              onTouchCancel={(e) => {
+                //
+              }}
+            />
+          )}
+        </View>
+      </RectButton>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  input: {
-    width: 300,
-    fontSize: 18,
-    fontFamily: constants.fonts.regular,
-    paddingHorizontal: 15,
-    paddingVertical: 5,
-    borderRadius: 15,
-  },
   dateInput: {
     width: 155,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingRight: 10,
+    alignItems: "center",
     fontSize: 14,
     fontFamily: constants.fonts.regular,
-    backgroundColor: "rgba(255,255,255,0.3)",
-    paddingHorizontal: 10,
+    borderStyle: "solid",
     paddingVertical: 5,
-    borderRadius: 15,
+    borderBottomColor: "#fff",
+    borderBottomWidth: 1,
   },
 });

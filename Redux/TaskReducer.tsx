@@ -1,33 +1,42 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-const lightGreen = {
+import { RootState } from "./store";
+const green = {
   mainColor: "#BAE2A7",
-  secondaryColor: "#A6E2BA",
-  mainText: "#F2F2F2",
-  darkText: "#2B6735",
-  lightText: "#539D5F",
-  checkBox: {
-    borderColor: "#21994A",
-    backgroundColor: "C2F1D2",
-  },
+  textColor: "#2B6735",
 };
+const blue = {
+  mainColor: "#A7DEE2",
+  textColor: "#2B6367",
+};
+const pink = {
+  mainColor: "#E2A7A7",
+  textColor: "#672B2B",
+};
+const purple = {
+  mainColor: "#AFA7E2",
+  textColor: "#332B67",
+};
+const yellow = {
+  mainColor: "#FEEAC3",
+  textColor: "#A38787",
+};
+export const colorThemes = [green, purple, yellow, pink, blue];
 
-export const colorThemes = [lightGreen];
-
-interface taskList {
+export interface taskList {
   name: string;
-  theme: typeof lightGreen;
+  theme: typeof green;
   taskListId: number;
   tasksIds: number[];
 }
-interface tasks {
+export interface tasks {
   name: string;
   description: string;
   taskId: number;
   taskListId: number;
   dateId: number | null;
 }
-interface calendar {
-  date: Date;
+export interface calendar {
+  date: number;
   dateId: number;
   taskId: number;
   taskListId: number;
@@ -41,7 +50,7 @@ const initialState: stateType = {
   taskList: [
     {
       name: "First Task list",
-      theme: lightGreen,
+      theme: green,
       taskListId: 0,
       tasksIds: [0],
     },
@@ -71,8 +80,9 @@ const Tasks = createSlice({
       const taskListData = {
         ...action.payload,
         taskListId: state.taskList.length,
-        tasksIDs: [],
+        tasksIds: [],
       };
+      state.taskList.push(taskListData);
     },
     REMOVE_TASK_LIST: (state, action: PayloadAction<taskList>) => {
       const index = state.taskList.indexOf({ ...action.payload });
@@ -80,15 +90,33 @@ const Tasks = createSlice({
     },
     ADD_TASK: (
       state,
-      action: PayloadAction<Omit<tasks, "dateId" | "taskId">>
+      action: PayloadAction<
+        Omit<Partial<calendar> & tasks, "taskId" | "dateId">
+      >
     ) => {
+      //
+
+      const index = state.taskList.findIndex(
+        (list) => list.taskListId === action.payload.taskListId
+      );
       const taskData = {
         ...action.payload,
         taskId: state.tasks.length,
-        taskListId: 0,
-        dateId: null,
+        dateId: state.calendar.length,
       };
+
       state.tasks.push(taskData);
+      state.taskList[index].tasksIds.push(taskData.taskId);
+
+      const date = action.payload.date;
+      if (date) {
+        state.calendar.push({
+          date: date,
+          dateId: taskData.dateId,
+          taskListId: taskData.taskListId,
+          taskId: taskData.taskId,
+        });
+      }
     },
     REMOVE_TASK: (state, action: PayloadAction<tasks>) => {
       const index = state.tasks.indexOf({ ...action.payload });

@@ -4,6 +4,8 @@ import * as React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import ActionButton from "../../components/ActionButton";
+import Overview from "../../components/Overview";
+import TaskList from "../../components/TaskLists";
 import constants from "../../constants/constant";
 import store from "../../Redux/store";
 
@@ -23,8 +25,12 @@ export default function Home({ navigation: navProps }: HomeProps) {
           navProps.navigate("Add Task List");
         }}
       />
-      <StatusBar backgroundColor={"#317579"} translucent={true} />
-      <Header />
+      <ScrollView contentContainerStyle={{ paddingBottom: 70 }}>
+        <Header />
+        <Overview />
+        <TaskList />
+        <StatusBar backgroundColor={"#317579"} translucent={true} />
+      </ScrollView>
     </>
   );
 }
@@ -33,20 +39,15 @@ const Header = () => {
   const name = store.getState();
 
   return (
-    <ScrollView>
-      <View style={headerStyles.header}>
-        <View style={headerStyles.container}>
-          <View style={headerStyles.profile} />
-          <View style={{ display: "flex" }}>
-            <Text style={headerStyles.textNormal}>Good morning</Text>
-            <Text style={headerStyles.title}>
-              {/* {name.TaskReducer.profile.name} */}
-            </Text>
-            <Text style={headerStyles.textLight}>3 Tasks for the day</Text>
-          </View>
+    <View style={headerStyles.header}>
+      <View style={headerStyles.container}>
+        <View style={{ display: "flex" }}>
+          <Text style={headerStyles.textNormal}>Good morning</Text>
+          <Text style={headerStyles.title}>Ismael</Text>
+          <Text style={headerStyles.textLight}>3 Tasks for the day</Text>
         </View>
       </View>
-    </ScrollView>
+    </View>
   );
 };
 
@@ -70,28 +71,17 @@ const headerStyles = StyleSheet.create({
     fontSize: 36,
     fontFamily: constants.fonts.bold,
     color: "white",
-    margin: 0,
   },
   textNormal: {
-    fontFamily: constants.fonts.regular,
-    margin: 0,
-    fontSize: 18,
-    color: "#E0DADA",
-    fontWeight: "normal",
+    fontFamily: constants.fonts.bold,
+    fontSize: 26,
+    color: "#fff",
   },
   textLight: {
     marginTop: 10,
     fontFamily: constants.fonts.regular,
     fontSize: 18,
-    color: "#E0DADA",
+    color: "#fff",
     fontWeight: "400",
-  },
-  profile: {
-    width: 70,
-    height: 70,
-    borderColor: "#E0DADA",
-    borderWidth: 5,
-    borderStyle: "solid",
-    borderRadius: 50,
   },
 });
