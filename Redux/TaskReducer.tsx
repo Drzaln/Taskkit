@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { RootState } from "./store";
 const green = {
   mainColor: "#BAE2A7",
   textColor: "#2B6735",
@@ -23,105 +22,103 @@ const yellow = {
 export const colorThemes = [green, purple, yellow, pink, blue];
 
 export interface taskList {
-  name: string;
-  theme: typeof green;
-  taskListId: number;
-  tasksIds: number[];
+  [taskListId: string]: {
+    name: string;
+    theme: typeof green;
+    tasksIds: string[];
+  };
 }
 export interface tasks {
-  name: string;
-  description: string;
-  taskId: number;
-  taskListId: number;
-  dateId: number | null;
+  [taskId: string]: {
+    name: string;
+    description: string;
+    taskListId: string;
+    dateId: number | null;
+    completed: boolean;
+  };
 }
 export interface calendar {
-  date: number;
-  dateId: number;
-  taskId: number;
-  taskListId: number;
+  [dateId: string]: { date: number; taskListId: string };
 }
 interface stateType {
-  taskList: taskList[];
-  tasks: tasks[];
-  calendar: calendar[];
+  taskList: taskList;
+  tasks: tasks;
+  calendar: calendar;
 }
 const initialState: stateType = {
-  taskList: [
-    {
+  taskList: {
+    ["0"]: {
       name: "First Task list",
       theme: green,
-      taskListId: 0,
-      tasksIds: [0],
+      tasksIds: ["0"],
     },
-  ],
-  tasks: [
-    {
+  },
+  tasks: {
+    ["0"]: {
       name: "this task",
       description: "this is a description",
-      taskId: 0,
-      taskListId: 0,
+      taskListId: "0",
       dateId: null,
+      completed: false,
     },
-  ],
-  calendar: [],
+  },
+  calendar: {},
 };
-
+interface addListPayLoad {
+  name: string;
+  theme: typeof green;
+}
+interface addTaskPayload {
+  name: string;
+  description: string;
+  taskListId: string;
+  date: number | null;
+}
+// TODO finish the actions below
 const Tasks = createSlice({
   name: "Tasks",
   initialState,
   reducers: {
-    ADD_TASK_LIST: (
-      state,
-      action: PayloadAction<
-        Omit<taskList, "tasksIDs" | "taskListId" | "tasksIds">
-      >
-    ) => {
-      const taskListData = {
-        ...action.payload,
-        taskListId: state.taskList.length,
+    ADD_TASK_LIST: (state, action: PayloadAction<addListPayLoad>) => {
+      const index = Math.floor(
+        Object.keys(state.taskList).length * Math.random() * 1000
+      );
+      state.taskList[index] = {
+        name: action.payload.name,
+        theme: action.payload.theme,
         tasksIds: [],
       };
-      state.taskList.push(taskListData);
     },
-    REMOVE_TASK_LIST: (state, action: PayloadAction<taskList>) => {
-      const index = state.taskList.indexOf({ ...action.payload });
-      state.taskList = state.taskList.splice(index, 1);
-    },
-    ADD_TASK: (
+    //
+    //
+    REMOVE_TASK_LIST: (
       state,
-      action: PayloadAction<
-        Omit<Partial<calendar> & tasks, "taskId" | "dateId">
-      >
-    ) => {
-      //
-
-      const index = state.taskList.findIndex(
-        (list) => list.taskListId === action.payload.taskListId
+      action: PayloadAction<{ taskListId: number }>
+    ) => {},
+    //
+    //
+    ADD_TASK: (state, action: PayloadAction<addTaskPayload>) => {
+      const index = Math.floor(
+        Object.keys(state.tasks).length * Math.random() * 1000
       );
-      const taskData = {
-        ...action.payload,
-        taskId: state.tasks.length,
-        dateId: state.calendar.length,
+      console.log(index);
+      state.tasks[index] = {
+        name: action.payload.name,
+        description: action.payload.description,
+        taskListId: action.payload.taskListId,
+        completed: false,
+        dateId: index,
       };
-
-      state.tasks.push(taskData);
-      state.taskList[index].tasksIds.push(taskData.taskId);
-
-      const date = action.payload.date;
-      if (date) {
-        state.calendar.push({
-          date: date,
-          dateId: taskData.dateId,
-          taskListId: taskData.taskListId,
-          taskId: taskData.taskId,
-        });
+      state.taskList[action.payload.taskListId].tasksIds.push(index.toString());
+      if (action.payload.date) {
+        state.calendar[index] = {
+          date: action.payload.date,
+          taskListId: action.payload.taskListId,
+        };
       }
     },
-    REMOVE_TASK: (state, action: PayloadAction<tasks>) => {
-      const index = state.tasks.indexOf({ ...action.payload });
-      state.tasks = state.tasks.splice(index, 1);
-    },
+    REMOVE_TASK: (state, action: PayloadAction<{ taskId: number }>) => {},
+    COMPLETE_TASK: (state, action: PayloadAction<{ taskId: number }>) => {},
   },
 });
 

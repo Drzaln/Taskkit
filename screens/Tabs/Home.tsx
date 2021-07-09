@@ -7,14 +7,14 @@ import ActionButton from "../../components/ActionButton";
 import Overview from "../../components/Overview";
 import TaskList from "../../components/TaskLists";
 import constants from "../../constants/constant";
+import { prams } from "../../Navigation";
 import store from "../../Redux/store";
 
 interface HomeProps {
-  navigation: StackNavigationProp<any>;
+  navigation: StackNavigationProp<prams>;
 }
 
 export default function Home({ navigation: navProps }: HomeProps) {
-  navProps.navigate;
   return (
     <>
       <ActionButton
@@ -25,10 +25,14 @@ export default function Home({ navigation: navProps }: HomeProps) {
           navProps.navigate("Add Task List");
         }}
       />
-      <ScrollView contentContainerStyle={{ paddingBottom: 70 }}>
+      <ScrollView
+        bounces={false}
+        indicatorStyle={"white"}
+        contentContainerStyle={{ paddingBottom: 70 }}
+      >
         <Header />
-        <Overview />
-        <TaskList />
+        <Overview navProps={navProps} />
+        <TaskList navigation={navProps} />
         <StatusBar backgroundColor={"#317579"} translucent={true} />
       </ScrollView>
     </>
@@ -57,7 +61,6 @@ const headerStyles = StyleSheet.create({
     borderBottomRightRadius: 60,
     backgroundColor: "#317579",
     paddingHorizontal: 20,
-    paddingTop: 30,
     paddingBottom: 60,
   },
   container: {

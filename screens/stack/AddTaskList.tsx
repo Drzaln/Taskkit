@@ -3,46 +3,19 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import * as React from "react";
 import { Alert, StyleSheet, Text, TextInput, View } from "react-native";
 import { RectButton } from "react-native-gesture-handler";
-import { useDispatch } from "react-redux";
-import store from "../../Redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../Redux/store";
 import { ADD_TASK_LIST, colorThemes } from "../../Redux/TaskReducer";
 
 interface AddTaskListProps {
   navigation: StackNavigationProp<any>;
 }
 const AddTaskList = ({ navigation: navProps }: AddTaskListProps) => {
-  const [name, setName] = React.useState<string>("");
-  const [theme, setTheme] = React.useState(colorThemes[0]);
-  const dispatch = useDispatch();
-  const [push, setPush] = React.useState(false);
-  React.useEffect(() => {
-    if (push) {
-      if (name.length > 0) {
-        const data = {
-          name,
-          theme,
-        };
-        const nameDuplicate = store
-          .getState()
-          .TaskReducer.taskList.filter(
-            (x) => x.name.toLowerCase() === data.name.toLocaleLowerCase()
-          ).length;
-        if (nameDuplicate === 0) {
-          dispatch(ADD_TASK_LIST(data));
-          navProps.goBack();
-        } else {
-          Alert.alert("Duplicate", "You can't have 2 lists with the same name");
-        }
-      } else {
-        Alert.alert("Missing", "The name filed is empty");
-      }
-    }
-  }, [push]);
   React.useLayoutEffect(
     () =>
       navProps.setOptions({
         headerRight: () => (
-          <View style={{ paddingHorizontal: 20 }}>
+          <View>
             <RectButton
               style={{
                 padding: 9,
@@ -61,6 +34,43 @@ const AddTaskList = ({ navigation: navProps }: AddTaskListProps) => {
       }),
     [navProps]
   );
+  const [name, setName] = React.useState<string>("");
+  const [theme, setTheme] = React.useState(colorThemes[0]);
+  const dispatch = useDispatch();
+  const taskList = useSelector(
+    (state: RootState) => state.TaskReducer.taskList
+  );
+  const [push, setPush] = React.useState(false);
+  const duplicateCheck = () => {
+    const a = Object.keys(taskList).map((i) => {
+      return taskList[i].name === name;
+    });
+    if (a.includes(true)) {
+      return true;
+    }
+    return false;
+  };
+  React.useEffect(() => {
+    if (push) {
+      if (name.length > 0) {
+        if (duplicateCheck()) {
+          Alert.alert("Duplicate", "You can't have 2 lists with the same name");
+          setPush(false);
+        } else {
+          const data = {
+            name,
+            theme,
+          };
+          dispatch(ADD_TASK_LIST(data));
+          navProps.goBack();
+        }
+      } else {
+        Alert.alert("Missing", "The name filed is empty");
+        setPush(false);
+      }
+    }
+  }, [push]);
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -99,8 +109,9 @@ const AddTaskList = ({ navigation: navProps }: AddTaskListProps) => {
                   // height: 20,
                   padding: 14,
                   backgroundColor: theme1.mainColor,
-                  borderColor: theme1.textColor,
-                  borderWidth: theme1 === theme ? 5 : 2,
+                  borderColor:
+                    theme1 === theme ? theme.textColor : "transparent",
+                  borderWidth: 3,
                   borderStyle: "solid",
                   borderRadius: 5,
                 }}

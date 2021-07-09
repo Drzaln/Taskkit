@@ -4,39 +4,74 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import * as React from "react";
 import { StyleSheet } from "react-native";
+import { useSelector } from "react-redux";
+import LogoTextContainer from "./components/LogoText";
+import TaskListInfo from "./components/TaskListInfo";
 import constants from "./constants/constant";
+import { RootState } from "./Redux/store";
+import { colorThemes } from "./Redux/TaskReducer";
+import Custom from "./screens/Custom";
 import AddTask from "./screens/stack/AddTask";
 import AddTaskList from "./screens/stack/AddTaskList";
 import Calendars from "./screens/Tabs/Calendar";
 import Home from "./screens/Tabs/Home";
 import MyDay from "./screens/Tabs/MyDay";
 import Profile from "./screens/Tabs/Profile";
-
-const Stack = createStackNavigator();
+export type prams = {
+  Main: undefined;
+  "Add Task": undefined;
+  "Add Task List": undefined;
+  "Task List info": {
+    name: string;
+    theme: typeof colorThemes[0];
+    tasksIds: string[];
+  };
+  Custom: { component: any };
+};
+const Stack = createStackNavigator<prams>();
 const Tab = createBottomTabNavigator();
 
 interface HomePageProps {
   screen: any;
 }
 const StackPage = ({ screen }: HomePageProps) => {
+  const taskLists = useSelector(
+    (state: RootState) => state.TaskReducer.taskList
+  );
+  const taskList = taskLists["0"];
   return (
     <Stack.Navigator
       initialRouteName="Main"
       screenOptions={{
         headerStyle: {
           backgroundColor: "#317579",
+          borderWidth: 0,
+          shadowOpacity: 0,
+          height: 80,
         },
+        headerBackTitleVisible: false,
         headerTintColor: "#fff",
         headerTitleStyle: {
           fontFamily: "Gilroy-Bold",
         },
+        headerTitleAlign: "left",
       }}
     >
       <Stack.Screen
         name="Main"
         component={screen}
         options={{
-          headerShown: false,
+          title: "",
+          headerStyle: {
+            backgroundColor: "#317579",
+            borderWidth: 0,
+            shadowOpacity: 0,
+            // elevation: 0,
+          },
+          headerTitleAlign: "left",
+          headerTitle: (props) => {
+            return <LogoTextContainer width={120} height={20} fill={"#fff"} />;
+          },
         }}
       />
       <Stack.Screen
@@ -51,6 +86,33 @@ const StackPage = ({ screen }: HomePageProps) => {
       />
 
       <Stack.Screen name="Add Task List" component={AddTaskList} />
+      <Stack.Screen
+        name="Custom"
+        component={Custom}
+        options={{
+          // headerShown: false,
+          title: "",
+        }}
+      />
+      <Stack.Screen
+        name="Task List info"
+        component={TaskListInfo}
+        initialParams={taskList}
+        options={{
+          headerStyle: {
+            height: 80,
+            borderWidth: 0,
+            shadowOpacity: 0,
+          },
+          cardShadowEnabled: false,
+          headerTitleAlign: "left",
+          headerTitleStyle: {
+            fontSize: 26,
+            fontFamily: constants.fonts.bold,
+            paddingLeft: 2,
+          },
+        }}
+      />
     </Stack.Navigator>
   );
 };
@@ -92,6 +154,7 @@ const Navigation = () => {
         />
         <Tab.Screen
           name={"Calendar"}
+          // component={AddTask}
           component={Calendars}
           options={{
             tabBarIcon: ({ color }) => (

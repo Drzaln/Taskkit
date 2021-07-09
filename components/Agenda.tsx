@@ -1,42 +1,49 @@
-import dayjs from "dayjs";
 import * as React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { useSelector } from "react-redux";
+import { findTaskListById, formatDate } from "../Redux/FindById";
 import { RootState } from "../Redux/store";
-import { findColor } from "../screens/Tabs/Calendar";
-interface AgendaProps {}
+import { calendar, taskList, tasks } from "../Redux/TaskReducer";
+interface AgendaProps {
+  calendar: calendar;
+  taskList: taskList;
+  tasks: tasks;
+}
 
-export const Agenda = (props: AgendaProps) => {
-  const { calendar, taskList, tasks } = useSelector(
-    (state: RootState) => state.TaskReducer
-  );
-  if (calendar.length !== 0) {
+export const Agenda = ({ calendar, taskList, tasks }: AgendaProps) => {
+  if (Object.keys(calendar).length !== 0) {
     return (
       <View>
-        {tasks.map((task) => {
-          const color = taskList.find((x) => x.taskListId === task.taskListId)
-            ?.theme.mainColor;
-          const dateNumber = calendar.find(
-            (x) => x.dateId === task.dateId
-          )?.date;
-          const time = dayjs(dateNumber).format("h:mm A");
-          const date = dayjs(dateNumber).format("ddd, D MMM");
-          return (
-            <View style={styles.container}>
-              <View
-                style={[styles.listIndicator, { backgroundColor: color }]}
-              />
-              <View>
-                <View style={styles.time}>
-                  <Text style={[styles.timeText, { fontSize: 16 }]}>
-                    {date}
-                  </Text>
-                  <Text style={styles.timeText}>{time}</Text>
+        {Object.keys(tasks).map((v, index) => {
+          const task = tasks[v];
+          if (
+            task.dateId !== undefined &&
+            task.dateId !== null &&
+            !task.completed
+          ) {
+            const { date, time } = formatDate(calendar[task.dateId].date);
+            const { theme } = findTaskListById(task.taskListId, taskList);
+
+            return (
+              <View style={styles.container} key={index}>
+                <View
+                  style={[
+                    styles.listIndicator,
+                    { backgroundColor: theme.mainColor },
+                  ]}
+                />
+                <View>
+                  <View style={styles.time}>
+                    <Text style={[styles.timeText, { fontSize: 16 }]}>
+                      {date}
+                    </Text>
+                    <Text style={styles.timeText}>{time}</Text>
+                  </View>
+                  <Text style={styles.mainText}>{task.name}</Text>
                 </View>
-                <Text style={styles.mainText}>{task.name}</Text>
               </View>
-            </View>
-          );
+            );
+          }
         })}
       </View>
     );

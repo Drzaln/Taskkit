@@ -1,12 +1,33 @@
 import { Feather, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { StackNavigationProp } from "@react-navigation/stack";
 import * as React from "react";
 import { ReactElement } from "react";
 import { ReactChildren } from "react";
 import { Text } from "react-native";
 import { View } from "react-native";
 import { StyleSheet } from "react-native";
-interface OverviewProps {}
-const Overview = (props: OverviewProps) => {
+import { RectButtonProps } from "react-native-gesture-handler";
+import { RectButton, RectButtonProperties } from "react-native-gesture-handler";
+import { useSelector } from "react-redux";
+import { prams } from "../Navigation";
+import { findFinishedTasks } from "../Redux/FindById";
+import { RootState } from "../Redux/store";
+import {
+  CompletedTaskView,
+  TaskListView,
+  TaskView,
+} from "../screens/stack/TaskListView";
+interface OverviewProps {
+  navProps: StackNavigationProp<prams>;
+}
+
+const Overview = ({ navProps }: OverviewProps) => {
+  const { tasks, taskList } = useSelector(
+    (state: RootState) => state.TaskReducer
+  );
+
+  const tasksListCount = Object.keys(taskList).length;
+  const tasksCount = Object.keys(tasks).length;
   return (
     <View style={styles.mainContainer}>
       <Text style={[styles.mainText, { marginBottom: 10, color: "black" }]}>
@@ -14,7 +35,7 @@ const Overview = (props: OverviewProps) => {
       </Text>
       <Row
         mainText="Tasks"
-        extraInfo="13 Tasks"
+        extraInfo={tasksCount + " Tasks"}
         icon={
           <MaterialCommunityIcons
             name="clipboard-check-multiple-outline"
@@ -23,45 +44,50 @@ const Overview = (props: OverviewProps) => {
           />
         }
         iconColor="#60AEDB"
+        onPress={() => {
+          navProps.push("Custom", { component: TaskView });
+        }}
       />
       <Row
         mainText="Task Lists"
-        extraInfo="2 Lists, 13 Tasks"
+        extraInfo={`${tasksListCount} Lists, ${tasksCount} Tasks`}
         icon={<Feather name="list" color="white" size={18} />}
         iconColor="#DB6060"
-      />
-      <Row
-        mainText="In progress"
-        extraInfo="3 Tasks"
-        iconColor="#DB8C60"
-        icon={<Feather name="loader" size={18} color="white" />}
+        onPress={() => {
+          navProps.push("Custom", { component: TaskListView });
+        }}
       />
       <Row
         mainText="Finished Tasks"
-        extraInfo="3 Tasks"
+        extraInfo={findFinishedTasks(tasks) + " Tasks"}
         icon={<Ionicons name="medal-outline" size={18} color="white" />}
         iconColor="#4FC76A"
+        onPress={() => {
+          navProps.push("Custom", { component: CompletedTaskView });
+        }}
       />
     </View>
   );
 };
 
-interface RowProps {
+interface RowProps extends RectButtonProps {
   mainText: string;
   extraInfo: string;
   icon: ReactElement;
   iconColor: string;
 }
 
-const Row = ({ mainText, extraInfo, icon: Icon, iconColor }: RowProps) => {
+const Row = (props: RowProps) => {
+  const { icon: Icon, iconColor, extraInfo, mainText } = props;
+
   return (
-    <View style={styles.container}>
+    <RectButton style={styles.container} {...props}>
       <View style={[styles.icon, { backgroundColor: iconColor }]}>{Icon}</View>
       <View>
         <Text style={styles.mainText}>{mainText}</Text>
         <Text style={styles.lightText}>{extraInfo}</Text>
       </View>
-    </View>
+    </RectButton>
   );
 };
 
@@ -74,6 +100,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginTop: 14,
+    paddingVertical: 2,
   },
   mainText: {
     color: "rgba(0,0,0,0.8)",

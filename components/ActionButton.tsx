@@ -18,16 +18,13 @@ const ActionButton = ({ firstAction, secondAction }: ActionButtonProps) => {
   const [open, setOpen] = React.useState(false);
   //
   //
+  // //
+  // //
   const rotate = useSharedValue(0);
-  // //
-  // //
-  const ty = useSharedValue(70);
-  const ty2 = useSharedValue(140);
   // //
 
   // //
   const rotateStyle = useAnimatedStyle(() => {
-    "worklet";
     return {
       transform: [
         {
@@ -41,25 +38,34 @@ const ActionButton = ({ firstAction, secondAction }: ActionButtonProps) => {
   // //
   const translateY1Style = useAnimatedStyle(() => {
     return {
-      transform: [{ translateY: ty.value }],
+      transform: [
+        {
+          translateY: withSpring(open ? 0 : 70, {
+            mass: open ? 0.7 : 0.5,
+            damping: open ? 10 : 13,
+          }),
+        },
+      ],
     };
   });
   const translateY2Style = useAnimatedStyle(() => {
     return {
-      transform: [{ translateY: ty2.value }],
+      transform: [
+        {
+          translateY: withSpring(open ? 0 : 140, {
+            mass: open ? 0.7 : 0.5,
+            damping: open ? 10 : 13,
+          }),
+        },
+      ],
     };
   });
   //
   React.useEffect(() => {
-    "worklet";
     if (open) {
-      rotate.value = withSpring(135, { mass: 0.3 });
-      ty.value = withSpring(0, { mass: 0.7 });
-      ty2.value = withSpring(0, { mass: 0.76 });
+      rotate.value = withSpring(135);
     } else {
-      ty.value = withSpring(70, { mass: 0.5, damping: 13 });
-      ty2.value = withSpring(140, { mass: 0.5, damping: 13 });
-      rotate.value = withSpring(0, { mass: 0.8, damping: 15 });
+      rotate.value = withSpring(0);
     }
   }, [open]);
 

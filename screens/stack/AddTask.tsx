@@ -3,7 +3,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import * as React from "react";
 import { Alert, StyleSheet, Text, TextInput, View } from "react-native";
 import {
-  RectButton,
+  BorderlessButton,
   ScrollView,
   Switch,
   TouchableWithoutFeedback,
@@ -11,10 +11,11 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { DateForm } from "../../components/Forms";
 import constants from "../../constants/constant";
+import { prams } from "../../Navigation";
 import { RootState } from "../../Redux/store";
 import { ADD_TASK } from "../../Redux/TaskReducer";
 interface AddTaskProps {
-  navigation: StackNavigationProp<any>;
+  navigation: StackNavigationProp<prams>;
 }
 
 export default function AddTask({ navigation: navProps }: AddTaskProps) {
@@ -24,7 +25,7 @@ export default function AddTask({ navigation: navProps }: AddTaskProps) {
   const [description, setDescription] = React.useState<string>("");
   const dispatch = useDispatch();
   const lists = useSelector((state: RootState) => state.TaskReducer.taskList);
-  const [taskListId, setTaskListId] = React.useState(lists[0].taskListId);
+  const [taskListId, setTaskListId] = React.useState(Object.keys(lists)[0]);
   const [push, setPush] = React.useState(false);
   React.useEffect(() => {
     if (push) {
@@ -33,11 +34,12 @@ export default function AddTask({ navigation: navProps }: AddTaskProps) {
           name,
           description,
           taskListId,
-          date: dateSwitch ? date.getTime() : undefined,
+          date: dateSwitch ? date.getTime() : null,
         };
         dispatch(ADD_TASK(taskData));
         navProps.goBack();
       } else {
+        setPush(false);
         Alert.alert("Missing", "The name filed is empty");
       }
     }
@@ -46,8 +48,8 @@ export default function AddTask({ navigation: navProps }: AddTaskProps) {
     () =>
       navProps.setOptions({
         headerRight: () => (
-          <View style={{ paddingHorizontal: 20 }}>
-            <RectButton
+          <View>
+            <BorderlessButton
               style={{
                 padding: 9,
                 justifyContent: "center",
@@ -59,7 +61,7 @@ export default function AddTask({ navigation: navProps }: AddTaskProps) {
               }}
             >
               <Feather name={"check"} color={"white"} size={25} />
-            </RectButton>
+            </BorderlessButton>
           </View>
         ),
       }),
@@ -100,8 +102,8 @@ export default function AddTask({ navigation: navProps }: AddTaskProps) {
               value={dateSwitch}
               thumbColor={"white"}
               trackColor={{ false: "white", true: "black" }}
-              onActivated={() => {
-                setDateSwitch(!dateSwitch);
+              onValueChange={(v) => {
+                setDateSwitch(v);
               }}
             />
           </View>
@@ -146,21 +148,21 @@ export default function AddTask({ navigation: navProps }: AddTaskProps) {
         <View
           style={{ flexDirection: "row", flexWrap: "wrap", paddingTop: 10 }}
         >
-          {lists.map((list, index) => (
+          {Object.keys(lists).map((list, index) => (
             <TouchableWithoutFeedback
               key={index}
               onPress={() => {
-                setTaskListId(list.taskListId);
+                setTaskListId(list);
               }}
             >
               <View
                 style={[
                   styles.listContainer,
                   {
-                    backgroundColor: list.theme.mainColor,
+                    backgroundColor: lists[list].theme.mainColor,
                     borderColor:
-                      list.taskListId === taskListId
-                        ? list.theme.textColor
+                      list === taskListId
+                        ? lists[list].theme.textColor
                         : "transparent",
                     borderWidth: 3,
                     borderStyle: "solid",
@@ -171,10 +173,10 @@ export default function AddTask({ navigation: navProps }: AddTaskProps) {
                   style={{
                     fontFamily: "Gilroy-Medium",
                     fontSize: 14,
-                    color: list.theme.textColor,
+                    color: lists[list].theme.textColor,
                   }}
                 >
-                  {list.name}
+                  {lists[list].name}
                 </Text>
               </View>
             </TouchableWithoutFeedback>

@@ -1,21 +1,42 @@
-import * as React from "react";
-import { Text } from "react-native";
-import { View } from "react-native";
-import { StyleSheet } from "react-native";
+import { Text, View, StyleSheet, ScrollView } from "react-native";
+import React from "react";
 import { Feather } from "@expo/vector-icons";
 import constants from "../../constants/constant";
+import TaskCard from "../../components/TaskCard";
+import { useSelector } from "react-redux";
+import { RootState } from "../../Redux/store";
+import {
+  findTaskById,
+  findTaskListById,
+  formatDate,
+} from "../../Redux/FindById";
+import dayjs from "dayjs";
 export default function MyDay() {
+  const { taskList, tasks, calendar } = useSelector(
+    (state: RootState) => state.TaskReducer
+  );
   return (
-    <View>
+    // TODO add checkbox and animated it
+    <ScrollView contentContainerStyle={{ flexGrow: 1, paddingBottom: 70 }}>
       <Header />
-      <Agenda />
-    </View>
+      <View style={styles.agendaContainer}>
+        {Object.keys(tasks).map((i, index) => {
+          const task = tasks[i];
+          const { theme } = findTaskListById(task.taskListId, taskList);
+          let date = null;
+          if (task.dateId) {
+            date = formatDate(calendar[task.dateId].date).date;
+          }
+          if (date === dayjs().format("ddd, D MMM"))
+            return (
+              <TaskCard theme={theme} task={task} key={index} date={date} />
+            );
+        })}
+      </View>
+    </ScrollView>
   );
 }
 
-const mainStyles = StyleSheet.create({});
-
-//TODO remove scrollView from the home header
 const Header = () => {
   return (
     <View style={styles.header}>
@@ -25,28 +46,20 @@ const Header = () => {
   );
 };
 
-const Agenda = () => {
-  return (
-    <View style={styles.agendaContainer}>
-      <Text>Hello world</Text>
-    </View>
-  );
-};
-
 const styles = StyleSheet.create({
   agendaContainer: {
-    paddingTop: 30,
-    paddingHorizontal: 20,
     flex: 1,
+    paddingHorizontal: 20,
   },
   header: {
     borderBottomLeftRadius: 60,
     borderBottomRightRadius: 60,
     backgroundColor: "#317579",
     paddingHorizontal: 20,
-    paddingTop: 60,
+    paddingTop: 25,
     paddingBottom: 40,
     display: "flex",
+    marginBottom: 40,
     alignItems: "center",
   },
   title: {
