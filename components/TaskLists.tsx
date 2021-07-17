@@ -1,8 +1,6 @@
 import { StackNavigationProp } from "@react-navigation/stack";
 import * as React from "react";
-import { StyleSheet, Text } from "react-native";
-import { View } from "react-native";
-import { RectButton } from "react-native-gesture-handler";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import { useSelector } from "react-redux";
 import { prams } from "../Navigation";
 import { RootState } from "../Redux/store";
@@ -16,16 +14,25 @@ const TaskList = ({ navigation: navProps }: TaskListProps) => {
     <View style={styles.container}>
       <Text style={styles.title}>Task Lists</Text>
       {Object.keys(lists).map((listId, index) => {
-        const list = lists[listId];
+        const list = { ...lists[listId], taskListId: listId };
         return (
-          <RectButton
+          <View
+            style={[styles.list, { backgroundColor: list.theme.mainColor }]}
             key={index}
-            onPress={() => {
-              navProps.push("Task List info", list);
-            }}
           >
-            <View
-              style={[styles.list, { backgroundColor: list.theme.mainColor }]}
+            <Pressable
+              onPress={() => {
+                navProps.push("Task List info", list);
+              }}
+              android_ripple={{
+                color: "rgba(255,255,255,0.2)",
+              }}
+              style={{
+                paddingHorizontal: 20,
+                paddingVertical: 15,
+
+                borderRadius: 10,
+              }}
             >
               <Text style={[styles.listName, { color: list.theme.textColor }]}>
                 {list.name}
@@ -38,8 +45,8 @@ const TaskList = ({ navigation: navProps }: TaskListProps) => {
               >
                 {list.tasksIds.length} Tasks
               </Text>
-            </View>
-          </RectButton>
+            </Pressable>
+          </View>
         );
       })}
     </View>
@@ -51,10 +58,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   list: {
-    paddingHorizontal: 20,
-    paddingVertical: 15,
-    borderRadius: 10,
     marginVertical: 5,
+    borderRadius: 10,
+    overflow: "hidden",
   },
   listName: {
     fontFamily: "Gilroy-Medium",

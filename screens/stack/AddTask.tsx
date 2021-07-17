@@ -1,9 +1,16 @@
 import { Feather } from "@expo/vector-icons";
+import { RouteProp } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import * as React from "react";
-import { Alert, StyleSheet, Text, TextInput, View } from "react-native";
 import {
-  BorderlessButton,
+  Alert,
+  Pressable,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
+import {
   ScrollView,
   Switch,
   TouchableWithoutFeedback,
@@ -14,11 +21,20 @@ import constants from "../../constants/constant";
 import { prams } from "../../Navigation";
 import { RootState } from "../../Redux/store";
 import { ADD_TASK } from "../../Redux/TaskReducer";
-interface AddTaskProps {
-  navigation: StackNavigationProp<prams>;
-}
 
-export default function AddTask({ navigation: navProps }: AddTaskProps) {
+type AddTaskProps = {
+  route: RouteProp<prams, "Add Task">;
+  navigation: StackNavigationProp<prams, "Add Task">;
+};
+export default function AddTask({
+  navigation: navProps,
+  route: { params },
+}: AddTaskProps) {
+  const listId = params?.taskListId;
+  const textColor = params?.textColor ? params.textColor : "white";
+  const backgroundColor = params?.backgroundColor
+    ? params.backgroundColor
+    : constants.colors.accentColor;
   const [date, setDate] = React.useState(new Date());
   const [dateSwitch, setDateSwitch] = React.useState(false);
   const [name, setName] = React.useState<string>("");
@@ -28,6 +44,10 @@ export default function AddTask({ navigation: navProps }: AddTaskProps) {
   const [taskListId, setTaskListId] = React.useState(Object.keys(lists)[0]);
   const [push, setPush] = React.useState(false);
   React.useEffect(() => {
+    if (listId) {
+      setTaskListId(listId);
+    }
+
     if (push) {
       if (name.length > 0) {
         const taskData = {
@@ -47,43 +67,69 @@ export default function AddTask({ navigation: navProps }: AddTaskProps) {
   React.useLayoutEffect(
     () =>
       navProps.setOptions({
+        headerStyle: {
+          backgroundColor: backgroundColor,
+          elevation: 0,
+          shadowOpacity: 0,
+          borderWidth: 0,
+        },
+        headerTintColor: textColor,
         headerRight: () => (
-          <View>
-            <BorderlessButton
+          <View
+            style={{
+              marginRight: 6,
+              borderRadius: 30,
+              padding: 10,
+              overflow: "hidden",
+            }}
+          >
+            <Pressable
+              android_ripple={{
+                color: "rgba(0,0,0,0.2)",
+                borderless: true,
+              }}
               style={{
-                padding: 9,
-                justifyContent: "center",
-                alignItems: "center",
-                borderRadius: 30,
+                padding: 4,
               }}
               onPress={() => {
                 setPush(true);
               }}
             >
-              <Feather name={"check"} color={"white"} size={25} />
-            </BorderlessButton>
+              <Feather name={"check"} color={textColor} size={25} />
+            </Pressable>
           </View>
         ),
       }),
     [navProps]
   );
   return (
-    <ScrollView
-      style={{
-        backgroundColor: constants.colors.backgroundColor,
-      }}
-    >
-      <View style={styles.header}>
+    <ScrollView>
+      <View style={[styles.header, { backgroundColor: backgroundColor }]}>
         <View style={{ display: "flex" }}>
-          <Text style={styles.textLight}>Name</Text>
+          <Text
+            style={{
+              fontFamily: constants.fonts.bold,
+              color: textColor,
+              fontSize: 28,
+            }}
+          >
+            Create New Task
+          </Text>
+          <Text style={[styles.textLight, { color: textColor }]}>Name</Text>
           <TextInput
             value={name}
             onChangeText={(e) => {
               setName(e);
             }}
-            style={styles.input}
+            style={[
+              styles.input,
+              {
+                borderBottomColor: textColor,
+                color: textColor,
+              },
+            ]}
             placeholder={"Name"}
-            placeholderTextColor="rgba(255,255,255,0.7)"
+            placeholderTextColor={textColor}
           />
           <View
             style={{
@@ -93,14 +139,19 @@ export default function AddTask({ navigation: navProps }: AddTaskProps) {
               alignItems: "center",
             }}
           >
-            <Text style={[styles.textLight, { opacity: dateSwitch ? 1 : 0.6 }]}>
+            <Text
+              style={[
+                styles.textLight,
+                { opacity: dateSwitch ? 1 : 0.6, color: textColor },
+              ]}
+            >
               Due date
             </Text>
 
             <Switch
               style={{ width: 30, paddingHorizontal: 20 }}
               value={dateSwitch}
-              thumbColor={"white"}
+              thumbColor={textColor}
               trackColor={{ false: "white", true: "black" }}
               onValueChange={(v) => {
                 setDateSwitch(v);
@@ -109,7 +160,7 @@ export default function AddTask({ navigation: navProps }: AddTaskProps) {
           </View>
           <DateForm
             mode={"date"}
-            color={"#fff"}
+            color={textColor}
             enabled={dateSwitch}
             date={date}
             setDate={setDate}
@@ -124,64 +175,78 @@ export default function AddTask({ navigation: navProps }: AddTaskProps) {
           paddingTop: 10,
         }}
       >
-        <Text style={[styles.textLight, { opacity: dateSwitch ? 1 : 0.6 }]}>
+        <Text
+          style={[
+            styles.textLight,
+            { opacity: dateSwitch ? 1 : 0.6, color: "#808080" },
+          ]}
+        >
           Time
         </Text>
         <DateForm
           date={date}
           setDate={setDate}
-          color={"white"}
+          color={"#808080"}
           enabled={dateSwitch}
           mode={"time"}
           style={{ width: 80 }}
         />
-        <Text style={[styles.textLight, { color: "white" }]}>Description</Text>
+        <Text style={[styles.textLight, { color: "#757575" }]}>
+          Description
+        </Text>
         <TextInput
-          style={[styles.input, { flexWrap: "wrap", marginBottom: 10 }]}
+          style={[
+            styles.input,
+            { flexWrap: "wrap", marginBottom: 10, color: "#808080" },
+          ]}
           multiline={true}
           value={description}
           onChangeText={(e) => setDescription(e)}
           placeholder="Description"
-          placeholderTextColor="rgba(255,255,255,0.7)"
+          placeholderTextColor="rgba(128,128,128,0.8)"
         />
-        <Text style={styles.textLight}>Task List</Text>
-        <View
-          style={{ flexDirection: "row", flexWrap: "wrap", paddingTop: 10 }}
-        >
-          {Object.keys(lists).map((list, index) => (
-            <TouchableWithoutFeedback
-              key={index}
-              onPress={() => {
-                setTaskListId(list);
-              }}
+        {typeof listId === "undefined" && (
+          <View>
+            <Text style={[styles.textLight, { color: "#757575" }]}>
+              Task List
+            </Text>
+            <View
+              style={{ flexDirection: "row", flexWrap: "wrap", paddingTop: 10 }}
             >
-              <View
-                style={[
-                  styles.listContainer,
-                  {
-                    backgroundColor: lists[list].theme.mainColor,
-                    borderColor:
-                      list === taskListId
-                        ? lists[list].theme.textColor
-                        : "transparent",
-                    borderWidth: 3,
-                    borderStyle: "solid",
-                  },
-                ]}
-              >
-                <Text
-                  style={{
-                    fontFamily: "Gilroy-Medium",
-                    fontSize: 14,
-                    color: lists[list].theme.textColor,
+              {Object.keys(lists).map((list, index) => (
+                <TouchableWithoutFeedback
+                  key={index}
+                  onPress={() => {
+                    setTaskListId(list);
                   }}
                 >
-                  {lists[list].name}
-                </Text>
-              </View>
-            </TouchableWithoutFeedback>
-          ))}
-        </View>
+                  <View
+                    style={[
+                      styles.listContainer,
+                      {
+                        backgroundColor: lists[list].theme.mainColor,
+                        borderColor:
+                          list === taskListId
+                            ? lists[list].theme.textColor
+                            : "transparent",
+                      },
+                    ]}
+                  >
+                    <Text
+                      style={{
+                        fontFamily: "Gilroy-Medium",
+                        fontSize: 16,
+                        color: lists[list].theme.textColor,
+                      }}
+                    >
+                      {lists[list].name}
+                    </Text>
+                  </View>
+                </TouchableWithoutFeedback>
+              ))}
+            </View>
+          </View>
+        )}
       </View>
     </ScrollView>
   );
@@ -189,18 +254,18 @@ export default function AddTask({ navigation: navProps }: AddTaskProps) {
 
 const styles = StyleSheet.create({
   header: {
-    paddingTop: 30,
+    // paddingTop: 10,
     paddingBottom: 60,
-    borderBottomLeftRadius: 60,
-    borderBottomRightRadius: 60,
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
     paddingHorizontal: 20,
-    backgroundColor: "#317579",
   },
   container: {
     paddingHorizontal: 20,
   },
   textLight: {
     fontFamily: constants.fonts.bold,
+
     marginTop: 20,
     fontSize: 16,
     marginBottom: 5,
@@ -213,7 +278,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderRadius: 30,
     justifyContent: "center",
-    backgroundColor: constants.colors.accentColor,
+
     position: "absolute",
     bottom: 84,
     right: 20,
@@ -221,18 +286,21 @@ const styles = StyleSheet.create({
   input: {
     marginTop: 5,
     borderBottomWidth: 1,
-    borderBottomColor: "rgba(255,255,255,0.7)",
+    borderBottomColor: "rgba(128,128,128,1)",
     borderStyle: "solid",
-    color: "white",
+    color: "#fff",
     width: 300,
-    paddingHorizontal: 5,
+    paddingHorizontal: 2,
     fontSize: 17,
     fontFamily: "Gilroy-Medium",
   },
   listContainer: {
-    padding: 6,
+    paddingVertical: 5,
+    paddingHorizontal: 15,
     marginRight: 10,
     marginBottom: 10,
     borderRadius: 6,
+    borderWidth: 2,
+    borderStyle: "solid",
   },
 });

@@ -1,8 +1,6 @@
 import { Entypo, Feather, MaterialIcons } from "@expo/vector-icons";
 import * as React from "react";
-import { View } from "react-native";
-import { StyleSheet } from "react-native";
-import { RectButton } from "react-native-gesture-handler";
+import { Pressable, StyleSheet, View } from "react-native";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -71,17 +69,23 @@ const ActionButton = ({ firstAction, secondAction }: ActionButtonProps) => {
 
   return (
     <View style={[styles.container]}>
-      <RectButton
-        style={styles.button}
-        onPress={() => {
-          console.log("this");
-          setOpen((e) => !e);
-        }}
-      >
-        <Animated.View style={[rotateStyle, {}]}>
-          <Feather name={"plus"} color={"white"} size={26} />
-        </Animated.View>
-      </RectButton>
+      <View style={styles.button}>
+        <Pressable
+          hitSlop={{ top: 5, left: 5, right: 5, bottom: 5 }}
+          android_ripple={{
+            color: "rgba(255,255,255,0.2)",
+            borderless: true,
+            radius: 30,
+          }}
+          onPress={() => {
+            setOpen((e) => !e);
+          }}
+        >
+          <Animated.View style={[rotateStyle, {}]}>
+            <Feather name={"plus"} color={"white"} size={26} />
+          </Animated.View>
+        </Pressable>
+      </View>
       {/*  */}
 
       {/*  */}
@@ -89,12 +93,19 @@ const ActionButton = ({ firstAction, secondAction }: ActionButtonProps) => {
         style={[translateY1Style, styles.extra]}
         pointerEvents={open ? "box-none" : "none"}
       >
-        <RectButton
-          style={[styles.button, { backgroundColor: "#9B9FB5" }]}
-          onPress={firstAction}
-        >
-          <MaterialIcons name="add-task" size={24} color="white" />
-        </RectButton>
+        <View style={[styles.button, { backgroundColor: "#9B9FB5" }]}>
+          <Pressable
+            hitSlop={{ top: 5, left: 5, right: 5, bottom: 5 }}
+            onPress={firstAction}
+            android_ripple={{
+              color: "rgba(0,0,0,0.2)",
+              borderless: true,
+              radius: 30,
+            }}
+          >
+            <MaterialIcons name="add-task" size={24} color="white" />
+          </Pressable>
+        </View>
       </Animated.View>
 
       {/*  */}
@@ -104,12 +115,19 @@ const ActionButton = ({ firstAction, secondAction }: ActionButtonProps) => {
         style={[translateY2Style, styles.extra]}
         pointerEvents={open ? "box-none" : "none"}
       >
-        <RectButton
-          style={[styles.button, { backgroundColor: "#B1B7D1" }]}
-          onPress={secondAction}
-        >
-          <Entypo name="add-to-list" size={24} color="white" />
-        </RectButton>
+        <View style={[styles.button, { backgroundColor: "#B1B7D1" }]}>
+          <Pressable
+            hitSlop={{ top: 5, left: 5, right: 5, bottom: 5 }}
+            onPress={secondAction}
+            android_ripple={{
+              borderless: true,
+              color: "rgba(0,0,0,0.2)",
+              radius: 30,
+            }}
+          >
+            <Entypo name="add-to-list" size={24} color="white" />
+          </Pressable>
+        </View>
       </Animated.View>
     </View>
   );

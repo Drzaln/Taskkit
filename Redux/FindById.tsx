@@ -18,9 +18,16 @@ interface list {
   };
   tasksIds: string[];
 }
-export const findTasksInTaskList = (taskList: list, tasks: tasks) => {
-  const taskArr = taskList.tasksIds.map((id) => {
-    return tasks[id];
+export const findTasksInTaskList = (
+  taskListId: string,
+  tasks: tasks,
+  taskLists: taskList
+) => {
+  const taskList = taskLists[taskListId];
+  const taskArr = taskList.tasksIds.map((i) => {
+    const task = tasks[i];
+    console.log(task);
+    return { ...task, taskId: i };
   });
   return taskArr;
 };

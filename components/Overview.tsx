@@ -2,12 +2,13 @@ import { Feather, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { StackNavigationProp } from "@react-navigation/stack";
 import * as React from "react";
 import { ReactElement } from "react";
-import { ReactChildren } from "react";
-import { Text } from "react-native";
-import { View } from "react-native";
-import { StyleSheet } from "react-native";
-import { RectButtonProps } from "react-native-gesture-handler";
-import { RectButton, RectButtonProperties } from "react-native-gesture-handler";
+import {
+  Pressable,
+  PressableProps,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import { useSelector } from "react-redux";
 import { prams } from "../Navigation";
 import { findFinishedTasks } from "../Redux/FindById";
@@ -70,7 +71,7 @@ const Overview = ({ navProps }: OverviewProps) => {
   );
 };
 
-interface RowProps extends RectButtonProps {
+interface RowProps extends PressableProps {
   mainText: string;
   extraInfo: string;
   icon: ReactElement;
@@ -81,13 +82,21 @@ const Row = (props: RowProps) => {
   const { icon: Icon, iconColor, extraInfo, mainText } = props;
 
   return (
-    <RectButton style={styles.container} {...props}>
-      <View style={[styles.icon, { backgroundColor: iconColor }]}>{Icon}</View>
-      <View>
-        <Text style={styles.mainText}>{mainText}</Text>
-        <Text style={styles.lightText}>{extraInfo}</Text>
-      </View>
-    </RectButton>
+    <View style={styles.container}>
+      <Pressable
+        android_ripple={{ color: "rgba(0,0,0,0.2)" }}
+        {...props}
+        style={{ flexDirection: "row", flex: 1, paddingVertical: 4 }}
+      >
+        <View style={[styles.icon, { backgroundColor: iconColor }]}>
+          {Icon}
+        </View>
+        <View>
+          <Text style={styles.mainText}>{mainText}</Text>
+          <Text style={styles.lightText}>{extraInfo}</Text>
+        </View>
+      </Pressable>
+    </View>
   );
 };
 
@@ -97,10 +106,9 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
   },
   container: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginTop: 14,
-    paddingVertical: 2,
+    overflow: "hidden",
+    marginTop: 10,
+    borderRadius: 20,
   },
   mainText: {
     color: "rgba(0,0,0,0.8)",

@@ -1,17 +1,13 @@
 import { StackNavigationProp } from "@react-navigation/stack";
 import * as React from "react";
-import { Text, View, StyleSheet } from "react-native";
+import { ScrollView, StyleSheet, Text } from "react-native";
 import { useSelector } from "react-redux";
 import TaskLists from "../../components/TaskLists";
-import { prams } from "../../Navigation";
-import { RootState } from "../../Redux/store";
-import TaskCard from "../../components/TaskCard";
-import {
-  findFinishedTasks,
-  findTaskListById,
-  formatDate,
-} from "../../Redux/FindById";
 import constants from "../../constants/constant";
+import { prams } from "../../Navigation";
+import { findFinishedTasks } from "../../Redux/FindById";
+import { RootState } from "../../Redux/store";
+import { mapThroughTasks } from "../../utils/mapThrough";
 interface TaskListViewProps {
   navProps: StackNavigationProp<prams>;
 }
@@ -22,9 +18,9 @@ export const TaskListView = ({ navProps }: TaskListViewProps) => {
     });
   }, []);
   return (
-    <View>
+    <ScrollView contentContainerStyle={{ paddingBottom: 90 }}>
       <TaskLists navigation={navProps} />
-    </View>
+    </ScrollView>
   );
 };
 const styles = StyleSheet.create({
@@ -49,24 +45,16 @@ export const TaskView = ({ navProps }: TaskListViewProps) => {
   );
   const keys = Object.keys(tasks);
   return (
-    <View style={styles.container}>
-      {keys.length === 0 && <Text>There's no Tasks</Text>}
-      {keys.map((i, index) => {
-        const task = tasks[i];
-        let date = null;
-        if (task.dateId) {
-          date = formatDate(calendar[task.dateId].date).date;
-        }
-        return (
-          <TaskCard
-            key={index}
-            task={task}
-            date={date}
-            theme={findTaskListById(task.taskListId, taskList).theme}
-          />
-        );
-      })}
-    </View>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={{ paddingBottom: 90 }}
+    >
+      {keys.length === 0 ? (
+        <Text>There's no Tasks</Text>
+      ) : (
+        mapThroughTasks(tasks, taskList, calendar, false, true)
+      )}
+    </ScrollView>
   );
 };
 export const CompletedTaskView = ({ navProps }: TaskListViewProps) => {
@@ -78,30 +66,17 @@ export const CompletedTaskView = ({ navProps }: TaskListViewProps) => {
   const { tasks, calendar, taskList } = useSelector(
     (state: RootState) => state.TaskReducer
   );
-  const keys = Object.keys(tasks);
-  const completedTasks = findFinishedTasks(tasks);
+  const keys = findFinishedTasks(tasks);
   return (
-    <View style={styles.container}>
-      {completedTasks === 0 && (
-        <Text style={styles.text}>There's no Finished Tasks</Text>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={{ paddingBottom: 90 }}
+    >
+      {keys === 0 ? (
+        <Text>There's No finished Tasks</Text>
+      ) : (
+        mapThroughTasks(tasks, taskList, calendar, true, true)
       )}
-      {keys.map((i, index) => {
-        const task = tasks[i];
-        let date = null;
-        if (task.dateId) {
-          date = formatDate(calendar[task.dateId].date).date;
-        }
-        if (task.completed) {
-          return (
-            <TaskCard
-              key={index}
-              task={task}
-              date={date}
-              theme={findTaskListById(task.taskListId, taskList).theme}
-            />
-          );
-        }
-      })}
-    </View>
+    </ScrollView>
   );
 };

@@ -11,29 +11,23 @@ import {
   formatDate,
 } from "../../Redux/FindById";
 import dayjs from "dayjs";
+import { mapThroughThisDay } from "../../utils/mapThrough";
+import { StatusBar } from "expo-status-bar";
 export default function MyDay() {
   const { taskList, tasks, calendar } = useSelector(
     (state: RootState) => state.TaskReducer
   );
+
+  //NOTE - Change this if you change TaskCard
   return (
-    // TODO add checkbox and animated it
-    <ScrollView contentContainerStyle={{ flexGrow: 1, paddingBottom: 70 }}>
-      <Header />
-      <View style={styles.agendaContainer}>
-        {Object.keys(tasks).map((i, index) => {
-          const task = tasks[i];
-          const { theme } = findTaskListById(task.taskListId, taskList);
-          let date = null;
-          if (task.dateId) {
-            date = formatDate(calendar[task.dateId].date).date;
-          }
-          if (date === dayjs().format("ddd, D MMM"))
-            return (
-              <TaskCard theme={theme} task={task} key={index} date={date} />
-            );
-        })}
-      </View>
-    </ScrollView>
+    <>
+      <ScrollView contentContainerStyle={{ flexGrow: 1, paddingBottom: 70 }}>
+        <Header />
+        <View style={styles.agendaContainer}>
+          {mapThroughThisDay(tasks, taskList, calendar)}
+        </View>
+      </ScrollView>
+    </>
   );
 }
 
@@ -52,9 +46,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   header: {
-    borderBottomLeftRadius: 60,
-    borderBottomRightRadius: 60,
-    backgroundColor: "#317579",
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
+    backgroundColor: constants.colors.accentColor,
     paddingHorizontal: 20,
     paddingTop: 25,
     paddingBottom: 40,

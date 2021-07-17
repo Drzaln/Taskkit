@@ -3,9 +3,8 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import * as React from "react";
 import { Dispatch, SetStateAction } from "react";
 import { Platform, StyleSheet, Text, View, ViewStyle } from "react-native";
-import { RectButton } from "react-native-gesture-handler";
 import constants from "../constants/constant";
-
+import { Pressable } from "react-native";
 interface dateProps {
   color: string;
   enabled: boolean;
@@ -33,10 +32,11 @@ export const DateForm = ({
 
   return (
     <View pointerEvents={enabled ? "box-none" : "none"}>
-      <RectButton
+      <Pressable
         onPress={() => {
           setShow(true);
         }}
+        android_ripple={{ color: "rgba(0,0,0,0.2)" }}
         style={
           style?.width !== undefined ? { width: style?.width } : { width: 155 }
         }
@@ -68,13 +68,13 @@ export const DateForm = ({
               // @ts-ignore
               onChange={onChange}
               mode={mode}
-              onTouchCancel={(e) => {
+              onTouchCancel={() => {
                 //
               }}
             />
           )}
         </View>
-      </RectButton>
+      </Pressable>
     </View>
   );
 };

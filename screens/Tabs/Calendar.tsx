@@ -23,35 +23,37 @@ export default function Calendars() {
   useEffect(() => {
     setMarkedDates(findMarkDates(dates, taskLists));
   }, [dates]);
-  useEffect(() => {
-    console.log(markedDates);
-  }, [markedDates]);
   return (
-    <ScrollView
-      style={{ backgroundColor: "#317579" }}
-      contentContainerStyle={{ flexGrow: 1, paddingTop: 30 }}
-    >
-      <View style={styles.calendarContainer}>
-        <Calendar
-          theme={{
-            backgroundColor: "#317579",
-            calendarBackground: "#317579",
-            textDayFontFamily: constants.fonts.regular,
-            textMonthFontFamily: constants.fonts.regular,
-            monthTextColor: "white",
-            textDisabledColor: "rgba(255,255,255,0.3)",
-            dayTextColor: "white",
-          }}
-          markingType={"multi-dot"}
-          markedDates={markedDates}
-          enableSwipeMonths={true}
-        />
-      </View>
-      <View style={styles.agenda}>
-        <View style={styles.thumb}></View>
-        <Agenda taskList={taskLists} tasks={tasks} calendar={dates} />
-      </View>
-    </ScrollView>
+    <>
+      {/* <View style={styles.header} /> */}
+      <ScrollView
+        style={{ backgroundColor: constants.colors.accentColor }}
+        contentContainerStyle={{ flexGrow: 1, paddingTop: 30 }}
+      >
+        <View style={styles.calendarContainer}>
+          <Calendar
+            theme={{
+              backgroundColor: constants.colors.accentColor,
+              calendarBackground: constants.colors.accentColor,
+              textDayFontFamily: constants.fonts.regular,
+              arrowColor: "white",
+              todayTextColor: "rgba(0,0,0,0.5)",
+              textMonthFontFamily: constants.fonts.regular,
+              monthTextColor: "white",
+              textDisabledColor: "rgba(255,255,255,0.3)",
+              dayTextColor: "white",
+            }}
+            markingType={"multi-dot"}
+            markedDates={markedDates}
+            // enableSwipeMonths={true}
+          />
+        </View>
+        <View style={styles.agenda}>
+          <View style={styles.thumb}></View>
+          <Agenda taskList={taskLists} tasks={tasks} calendar={dates} />
+        </View>
+      </ScrollView>
+    </>
   );
 }
 
@@ -64,6 +66,11 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 35,
     padding: 20,
     paddingBottom: 70,
+  },
+  header: {
+    height: 70,
+    backgroundColor: constants.colors.accentColor,
+    width: "100%",
   },
   thumb: {
     alignSelf: "center",

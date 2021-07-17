@@ -1,7 +1,10 @@
 import { AntDesign, Feather } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
-import { createStackNavigator } from "@react-navigation/stack";
+import {
+  createStackNavigator,
+  StackNavigationProp,
+} from "@react-navigation/stack";
 import * as React from "react";
 import { StyleSheet } from "react-native";
 import { useSelector } from "react-redux";
@@ -9,7 +12,6 @@ import LogoTextContainer from "./components/LogoText";
 import TaskListInfo from "./components/TaskListInfo";
 import constants from "./constants/constant";
 import { RootState } from "./Redux/store";
-import { colorThemes } from "./Redux/TaskReducer";
 import Custom from "./screens/Custom";
 import AddTask from "./screens/stack/AddTask";
 import AddTaskList from "./screens/stack/AddTaskList";
@@ -19,14 +21,22 @@ import MyDay from "./screens/Tabs/MyDay";
 import Profile from "./screens/Tabs/Profile";
 export type prams = {
   Main: undefined;
-  "Add Task": undefined;
+  "Add Task":
+    | {
+        backgroundColor: string;
+        taskListId: string;
+        textColor: string;
+      }
+    | undefined;
   "Add Task List": undefined;
   "Task List info": {
     name: string;
-    theme: typeof colorThemes[0];
-    tasksIds: string[];
+    theme: { mainColor: string; textColor: string };
+    taskListId: string;
   };
-  Custom: { component: any };
+  Custom: {
+    component: React.FC<{ navProps: StackNavigationProp<prams, "Custom"> }>;
+  };
 };
 const Stack = createStackNavigator<prams>();
 const Tab = createBottomTabNavigator();
@@ -44,7 +54,7 @@ const StackPage = ({ screen }: HomePageProps) => {
       initialRouteName="Main"
       screenOptions={{
         headerStyle: {
-          backgroundColor: "#317579",
+          backgroundColor: constants.colors.accentColor,
           borderWidth: 0,
           shadowOpacity: 0,
           height: 80,
@@ -63,13 +73,13 @@ const StackPage = ({ screen }: HomePageProps) => {
         options={{
           title: "",
           headerStyle: {
-            backgroundColor: "#317579",
+            backgroundColor: constants.colors.accentColor,
             borderWidth: 0,
-            shadowOpacity: 0,
+            // shadowOpacity: 0,
             // elevation: 0,
           },
           headerTitleAlign: "left",
-          headerTitle: (props) => {
+          headerTitle: () => {
             return <LogoTextContainer width={120} height={20} fill={"#fff"} />;
           },
         }}
@@ -78,20 +88,34 @@ const StackPage = ({ screen }: HomePageProps) => {
         name="Add Task"
         component={AddTask}
         options={{
+          headerTitle: "",
           headerStyle: {
             backgroundColor: constants.colors.accentColor,
+            borderWidth: 0,
+            shadowOpacity: 0,
+            elevation: 0,
           },
-          headerTitle: "Create New Task",
         }}
       />
 
-      <Stack.Screen name="Add Task List" component={AddTaskList} />
+      <Stack.Screen
+        name="Add Task List"
+        component={AddTaskList}
+        options={{
+          headerTitle: "",
+          headerStyle: {
+            backgroundColor: constants.colors.accentColor,
+            borderWidth: 0,
+            shadowOpacity: 0,
+            elevation: 0,
+          },
+        }}
+      />
       <Stack.Screen
         name="Custom"
         component={Custom}
         options={{
-          // headerShown: false,
-          title: "",
+          headerTitle: "",
         }}
       />
       <Stack.Screen

@@ -1,13 +1,16 @@
-import { RouteProp, StackRouterOptions } from "@react-navigation/native";
+import { MaterialIcons } from "@expo/vector-icons";
+import { RouteProp } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { StatusBar } from "expo-status-bar";
 import * as React from "react";
-import { View, StyleSheet, Text } from "react-native";
+import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { TouchableNativeFeedback } from "react-native-gesture-handler";
 import { useSelector } from "react-redux";
 import constants from "../constants/constant";
 import { prams } from "../Navigation";
 import { findTasksInTaskList, formatDate } from "../Redux/FindById";
 import { RootState } from "../Redux/store";
+import { mapThroughInList } from "../utils/mapThrough";
 import TaskCard from "./TaskCard";
 
 type TaskListInfoProps = {
@@ -16,47 +19,72 @@ type TaskListInfoProps = {
 };
 
 const TaskListInfo = ({ route, navigation: navProps }: TaskListInfoProps) => {
-  const { calendar, tasks } = useSelector(
+  const { name, theme, taskListId } = route.params;
+  const { calendar, tasks, taskList } = useSelector(
     (state: RootState) => state.TaskReducer
   );
   React.useLayoutEffect(() => {
     navProps.setOptions({
-      title: route.params.name,
-      headerStyle: { backgroundColor: route.params.theme.mainColor },
+      title: name,
+      headerStyle: { backgroundColor: theme.mainColor },
     });
   }, []);
-  const { name, theme, tasksIds } = route.params;
+  const tasksIds = findTasksInTaskList(taskListId, tasks, taskList);
+  const buttonColor =
+    theme.textColor === "#fff" ? "rgba(0,0,0,0.3)" : theme.textColor;
   return (
-    <View style={{ backgroundColor: theme.mainColor, flex: 1 }}>
-      <View style={[styles.header, { backgroundColor: theme.mainColor }]}>
-        <Text style={[styles.textNormal, { color: theme.textColor }]}>
-          {tasksIds.length} Tasks
-        </Text>
+    <>
+      <View
+        style={[
+          styles.floating,
+          styles.button,
+          { backgroundColor: theme.mainColor },
+        ]}
+      >
+        <Pressable
+          style={[styles.button, { backgroundColor: buttonColor }]}
+          onPress={() => {
+            navProps.push("Add Task", {
+              backgroundColor: theme.mainColor,
+              textColor: theme.textColor,
+              taskListId: taskListId,
+            });
+          }}
+          android_ripple={{
+            borderless: true,
+            color: "rgba(255,255,255,0.4)",
+            radius: 30,
+          }}
+        >
+          <MaterialIcons name="add-task" size={24} color="white" />
+        </Pressable>
       </View>
+      <ScrollView
+        contentContainerStyle={{
+          backgroundColor: theme.mainColor,
+          flexGrow: 1,
+        }}
+      >
+        <View style={[styles.header, { backgroundColor: theme.mainColor }]}>
+          <Text style={[styles.textNormal, { color: theme.textColor }]}>
+            {tasksIds.length} Tasks
+          </Text>
+        </View>
 
-      <View style={styles.container}>
-        <Text style={[styles.title, { color: theme.textColor }]}>Tasks</Text>
-        {tasksIds.map((i, index) => {
-          const task = tasks[i];
-          let date = null;
-          if (task.dateId) {
-            date = formatDate(calendar[task.dateId].date);
-          }
-          return (
-            <TaskCard task={task} theme={theme} key={index} date={date?.date} />
-          );
-        })}
-      </View>
+        <View style={styles.container}>
+          <Text style={[styles.title, { color: theme.textColor }]}>Tasks</Text>
+          {mapThroughInList({ tasksIds, calendar, theme })}
+        </View>
 
-      <StatusBar backgroundColor={theme.mainColor} style="auto" />
-    </View>
+        <StatusBar backgroundColor={theme.mainColor} style="auto" />
+      </ScrollView>
+    </>
   );
 };
 const styles = StyleSheet.create({
   header: {
     height: 90,
     paddingTop: 10,
-    // backgroundColor: "#317579",
     paddingHorizontal: 20,
     paddingBottom: 40,
     marginBottom: 40,
@@ -81,6 +109,21 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 20,
     backgroundColor: "white",
+    paddingBottom: 70,
+  },
+  floating: {
+    position: "absolute",
+    bottom: 84,
+    right: 20,
+    zIndex: 99,
+  },
+  button: {
+    backgroundColor: "#7A6174",
+    borderRadius: 30,
+    width: 60,
+    height: 60,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 export default TaskListInfo;

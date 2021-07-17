@@ -33,7 +33,10 @@ export default function Home({ navigation: navProps }: HomeProps) {
         <Header />
         <Overview navProps={navProps} />
         <TaskList navigation={navProps} />
-        <StatusBar backgroundColor={"#317579"} translucent={true} />
+        <StatusBar
+          backgroundColor={constants.colors.accentColor}
+          translucent={true}
+        />
       </ScrollView>
     </>
   );
@@ -57,11 +60,11 @@ const Header = () => {
 
 const headerStyles = StyleSheet.create({
   header: {
-    borderBottomLeftRadius: 60,
-    borderBottomRightRadius: 60,
-    backgroundColor: "#317579",
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
+    backgroundColor: constants.colors.accentColor,
     paddingHorizontal: 20,
-    paddingBottom: 60,
+    paddingBottom: 40,
   },
   container: {
     display: "flex",

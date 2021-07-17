@@ -8,7 +8,7 @@ const globalStyles = StyleSheet.create({
 const constants = {
   colors: {
     backgroundColor: "#C4C4C4",
-    accentColor: "#317579",
+    accentColor: "#9D98AB",
   },
   padding: {
     horizontal: 20,

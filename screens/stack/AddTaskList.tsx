@@ -1,9 +1,16 @@
 import { Feather } from "@expo/vector-icons";
 import { StackNavigationProp } from "@react-navigation/stack";
 import * as React from "react";
-import { Alert, StyleSheet, Text, TextInput, View } from "react-native";
-import { RectButton } from "react-native-gesture-handler";
+import {
+  Alert,
+  Pressable,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
 import { useDispatch, useSelector } from "react-redux";
+import constants from "../../constants/constant";
 import { RootState } from "../../Redux/store";
 import { ADD_TASK_LIST, colorThemes } from "../../Redux/TaskReducer";
 
@@ -15,20 +22,28 @@ const AddTaskList = ({ navigation: navProps }: AddTaskListProps) => {
     () =>
       navProps.setOptions({
         headerRight: () => (
-          <View>
-            <RectButton
+          <View
+            style={{
+              marginRight: 6,
+              borderRadius: 30,
+              padding: 10,
+              overflow: "hidden",
+            }}
+          >
+            <Pressable
+              android_ripple={{
+                color: "rgba(0,0,0,0.2)",
+                borderless: true,
+              }}
               style={{
-                padding: 9,
-                justifyContent: "center",
-                alignItems: "center",
-                borderRadius: 30,
+                padding: 4,
               }}
               onPress={() => {
                 setPush(true);
               }}
             >
-              <Feather name={"check"} color={"white"} size={25} />
-            </RectButton>
+              <Feather name={"check"} color="white" size={25} />
+            </Pressable>
           </View>
         ),
       }),
@@ -74,49 +89,82 @@ const AddTaskList = ({ navigation: navProps }: AddTaskListProps) => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
+        <Text
+          style={{
+            fontFamily: constants.fonts.bold,
+            color: "white",
+            fontSize: 28,
+            marginBottom: 10,
+          }}
+        >
+          Add Task list
+        </Text>
         <Text style={styles.text}>Name</Text>
         <TextInput
           value={name}
           onChangeText={(val) => setName(val)}
           style={styles.input}
-          placeholder="Name"
+          placeholder="Your Title here"
           placeholderTextColor="rgba(255,255,255,0.8)"
         />
       </View>
-      <View style={{ flex: 1, padding: 20 }}>
+      <View style={{ flex: 1, paddingHorizontal: 20 }}>
         <Text style={[styles.text, { fontSize: 18, color: "gray" }]}>
           Theme
         </Text>
         <View
           style={{
             flexDirection: "row",
-            marginTop: 20,
+            flexWrap: "wrap",
           }}
         >
           {colorThemes.map((theme1, index) => (
-            <RectButton
+            <Pressable
               key={index}
               onPress={() => {
                 setTheme(theme1);
               }}
               style={{
-                marginRight: 20,
+                marginRight: 15,
+                marginTop: 15,
               }}
             >
               <View
                 style={{
-                  // width: 20,
-                  // height: 20,
-                  padding: 14,
-                  backgroundColor: theme1.mainColor,
-                  borderColor:
-                    theme1 === theme ? theme.textColor : "transparent",
-                  borderWidth: 3,
-                  borderStyle: "solid",
-                  borderRadius: 5,
+                  width: 45,
+                  height: 45,
+                  marginTop: 10,
+                  padding: 6,
+                  backgroundColor:
+                    theme1 === theme ? "rgba(0,0,0,0.2)" : "transparent",
+                  borderRadius: 10,
                 }}
-              />
-            </RectButton>
+              >
+                <View
+                  style={{
+                    backgroundColor: theme1.mainColor,
+                    flex: 1,
+                    transform: [{ rotate: "-45deg" }],
+                    borderColor:
+                      theme1 === theme ? theme.textColor : "transparent",
+                    borderWidth: 3,
+                    borderStyle: "solid",
+                  }}
+                />
+                <View
+                  style={{
+                    flex: 1,
+                    backgroundColor: theme1.textColor,
+                    borderRadius: 0,
+                    transform: [{ rotate: "-45deg" }],
+                    borderColor:
+                      theme1 === theme ? theme.mainColor : "transparent",
+                    borderWidth: 3,
+                    borderStyle: "solid",
+                  }}
+                />
+              </View>
+            </Pressable>
           ))}
         </View>
       </View>
@@ -130,25 +178,29 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    backgroundColor: "#317579",
+    backgroundColor: constants.colors.accentColor,
     paddingHorizontal: 20,
-    paddingTop: 20,
+    // paddingTop: 00,
     paddingBottom: 60,
-    borderBottomLeftRadius: 30,
-    borderBottomRightRadius: 30,
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
   },
   text: {
+    fontFamily: constants.fonts.bold,
+
+    marginTop: 20,
+    fontSize: 16,
+    marginBottom: 5,
     color: "white",
-    fontFamily: "Gilroy-Regular",
   },
   input: {
-    marginTop: 15,
-    borderBottomWidth: 2,
-    borderBottomColor: "rgb(200,200,200)",
+    marginTop: 5,
+    borderBottomWidth: 1,
+    borderBottomColor: "white",
     borderStyle: "solid",
-    color: "white",
+    color: "#fff",
     width: 300,
-    paddingHorizontal: 5,
+    paddingHorizontal: 2,
     fontSize: 17,
     fontFamily: "Gilroy-Medium",
   },

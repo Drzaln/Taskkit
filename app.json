@@ -3,7 +3,6 @@
     "name": "my-tasks",
     "slug": "my-tasks",
     "version": "1.0.0",
-
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
@@ -21,10 +20,7 @@
       "supportsTablet": true
     },
     "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#C2B7E1"
-      }
+      "package": "com.taskkit.taskkit"
     },
     "androidNavigationBar": {
       "backgroundColor": "#F1F1F1"

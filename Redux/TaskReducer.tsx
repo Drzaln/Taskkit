@@ -3,7 +3,7 @@ const green = {
   mainColor: "#BAE2A7",
   textColor: "#2B6735",
 };
-const blue = {
+const lightBlue = {
   mainColor: "#A7DEE2",
   textColor: "#2B6367",
 };
@@ -19,7 +19,28 @@ const yellow = {
   mainColor: "#FEEAC3",
   textColor: "#A38787",
 };
-export const colorThemes = [green, purple, yellow, pink, blue];
+const givry = {
+  mainColor: "#F7D2BF",
+  textColor: "#1C0060",
+};
+const dodgerBlue = {
+  mainColor: "#4293FF",
+  textColor: "#fff",
+};
+const zest = {
+  mainColor: "#E17A2D",
+  textColor: "#37003E",
+};
+export const colorThemes = [
+  green,
+  purple,
+  yellow,
+  pink,
+  lightBlue,
+  dodgerBlue,
+  zest,
+  givry,
+];
 
 export interface taskList {
   [taskListId: string]: {
@@ -34,7 +55,9 @@ export interface tasks {
     description: string;
     taskListId: string;
     dateId: number | null;
+    date: number | null;
     completed: boolean;
+    createdAt: number;
   };
 }
 export interface calendar {
@@ -59,7 +82,9 @@ const initialState: stateType = {
       description: "this is a description",
       taskListId: "0",
       dateId: null,
+      date: null,
       completed: false,
+      createdAt: Date.now(),
     },
   },
   calendar: {},
@@ -101,12 +126,14 @@ const Tasks = createSlice({
       const index = Math.floor(
         Object.keys(state.tasks).length * Math.random() * 1000
       );
-      console.log(index);
+      // console.log(index);
       state.tasks[index] = {
         name: action.payload.name,
         description: action.payload.description,
         taskListId: action.payload.taskListId,
         completed: false,
+        date: action.payload.date,
+        createdAt: Date.now(),
         dateId: index,
       };
       state.taskList[action.payload.taskListId].tasksIds.push(index.toString());
@@ -118,11 +145,22 @@ const Tasks = createSlice({
       }
     },
     REMOVE_TASK: (state, action: PayloadAction<{ taskId: number }>) => {},
-    COMPLETE_TASK: (state, action: PayloadAction<{ taskId: number }>) => {},
+    COMPLETE_TASK: (
+      state,
+      action: PayloadAction<{ taskId: string; value: boolean }>
+    ) => {
+      if (state.tasks[action.payload.taskId])
+        state.tasks[action.payload.taskId].completed = action.payload.value;
+    },
   },
 });
 
-export const { REMOVE_TASK, ADD_TASK, ADD_TASK_LIST, REMOVE_TASK_LIST } =
-  Tasks.actions;
+export const {
+  REMOVE_TASK,
+  ADD_TASK,
+  ADD_TASK_LIST,
+  REMOVE_TASK_LIST,
+  COMPLETE_TASK,
+} = Tasks.actions;
 
 export default Tasks.reducer;
