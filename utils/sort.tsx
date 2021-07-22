@@ -1,28 +1,43 @@
 import { tasks } from "../Redux/TaskReducer";
-
-export const sort = (keys: string[], tasks: tasks) => {
-  const byDate: string[] = [];
-  const byCreatedAt: string[] = [];
+type sortTa = {
+  sorted: string[];
+  tasks: tasks;
+};
+export const sortTasks = ({ sorted, tasks }: sortTa) => {
+  let newTasks: typeof tasks = {};
+  sorted.map((i) => {
+    newTasks[i] = tasks[i];
+  });
+  console.log(newTasks);
+  return newTasks;
+};
+export const sortKeys = (keys: string[], tasks: tasks) => {
+  let byDate: string[] = [];
+  let byCreated: string[] = [];
   keys.map((i) => {
-    const task = { ...tasks[i], taskId: i };
+    const task = { date: tasks[i].date, taskId: i };
     if (task.date) {
-      for (let j = 0; j < byDate.length; j++) {
-        const byDateTask = { ...tasks[byDate[j]], taskId: byDate[j] };
-        //@ts-ignore
-        if (byDateTask.date < task.date) {
-          byDate.splice(j, 0, byDateTask.taskId);
-          continue;
-        }
+      const len = byDate.length;
+      if (len === 0) {
+        byDate.push(task.taskId);
+      } else {
+        byDate.map((key, index) => {
+          const taskByDate = { date: tasks[key].date, taskId: key };
+          //@ts-ignore
+          if (taskByDate.date > task.date) {
+            byDate.splice(index, 0, task.taskId);
+          } else {
+            if (index === len - 1) {
+              byDate.push(task.taskId);
+            }
+          }
+        });
       }
     } else {
-      for (let j = 0; j < byCreatedAt.length; j++) {
-        const byTask = { ...tasks[byCreatedAt[j]], taskId: byCreatedAt[j] };
-        if (byTask.createdAt < task.createdAt) {
-          byCreatedAt.splice(j, 0, byTask.taskId);
-          continue;
-        }
-      }
+      byCreated.push(task.taskId);
     }
   });
-  return [...byDate, ...byCreatedAt];
+  console.log("byDate:", byDate);
+  const sorted = [...byDate, ...byCreated];
+  return { sorted, tasks };
 };

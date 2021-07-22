@@ -9,7 +9,6 @@ export const mapThroughTasks = (
   showTaskListName?: boolean
 ) => {
   const keys = Object.keys(tasks);
-
   return keys.map((i, index) => {
     const task = { ...tasks[i], taskId: i };
     const date = formatDate(task.date);
@@ -69,7 +68,7 @@ type a = {
     taskListId: string;
     dateId: number | null;
     completed: boolean;
-    date: number;
+    date: number | null;
   }[];
   calendar: calendar;
   theme: {

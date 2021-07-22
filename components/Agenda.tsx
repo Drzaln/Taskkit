@@ -1,8 +1,6 @@
 import * as React from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { useSelector } from "react-redux";
 import { findTaskListById, formatDate } from "../Redux/FindById";
-import { RootState } from "../Redux/store";
 import { calendar, taskList, tasks } from "../Redux/TaskReducer";
 interface AgendaProps {
   calendar: calendar;
@@ -16,14 +14,10 @@ export const Agenda = ({ calendar, taskList, tasks }: AgendaProps) => {
       <View>
         {Object.keys(tasks).map((v, index) => {
           const task = tasks[v];
-          if (
-            task.dateId !== undefined &&
-            task.dateId !== null &&
-            !task.completed
-          ) {
-            const { date, time } = formatDate(calendar[task.dateId].date);
+          if (task.date !== null && !task.completed) {
+            const { date, time } = formatDate(task.date);
             const { theme } = findTaskListById(task.taskListId, taskList);
-
+            console.log(date);
             return (
               <View style={styles.container} key={index}>
                 <View

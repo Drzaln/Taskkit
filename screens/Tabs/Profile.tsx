@@ -4,7 +4,7 @@ import { StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import TaskCard from "../../components/TaskCard";
 import CheckBox from "../../components/CheckBox";
-import { colorThemes } from "../../Redux/TaskReducer";
+import { colorThemes } from "../../Redux/themes";
 export default function Profile() {
   const inset = useSafeAreaInsets();
   return (

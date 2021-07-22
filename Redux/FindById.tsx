@@ -10,14 +10,7 @@ export const findTaskListById = (id: string, taskList: taskList) => {
   };
 };
 export const findTaskById = (id: string, tasks: tasks[]) => {};
-interface list {
-  name: string;
-  theme: {
-    mainColor: string;
-    textColor: string;
-  };
-  tasksIds: string[];
-}
+
 export const findTasksInTaskList = (
   taskListId: string,
   tasks: tasks,

@@ -35,15 +35,16 @@ const styles = StyleSheet.create({
 });
 
 export const TaskView = ({ navProps }: TaskListViewProps) => {
-  React.useLayoutEffect(() => {
+  React.useEffect(() => {
     navProps.setOptions({
       title: "Tasks",
     });
   }, []);
-  const { tasks, calendar, taskList } = useSelector(
+  const { tasks, taskList } = useSelector(
     (state: RootState) => state.TaskReducer
   );
   const keys = Object.keys(tasks);
+
   return (
     <ScrollView
       style={styles.container}
@@ -52,7 +53,7 @@ export const TaskView = ({ navProps }: TaskListViewProps) => {
       {keys.length === 0 ? (
         <Text>There's no Tasks</Text>
       ) : (
-        mapThroughTasks(tasks, taskList, calendar, false, true)
+        mapThroughTasks(tasks, taskList, false, true)
       )}
     </ScrollView>
   );
@@ -60,7 +61,7 @@ export const TaskView = ({ navProps }: TaskListViewProps) => {
 export const CompletedTaskView = ({ navProps }: TaskListViewProps) => {
   React.useLayoutEffect(() => {
     navProps.setOptions({
-      title: "Tasks",
+      title: "Finished Tasks",
     });
   }, []);
   const { tasks, calendar, taskList } = useSelector(
@@ -75,7 +76,7 @@ export const CompletedTaskView = ({ navProps }: TaskListViewProps) => {
       {keys === 0 ? (
         <Text>There's No finished Tasks</Text>
       ) : (
-        mapThroughTasks(tasks, taskList, calendar, true, true)
+        mapThroughTasks(tasks, taskList, true, true)
       )}
     </ScrollView>
   );

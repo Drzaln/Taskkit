@@ -111,13 +111,7 @@ const StackPage = ({ screen }: HomePageProps) => {
           },
         }}
       />
-      <Stack.Screen
-        name="Custom"
-        component={Custom}
-        options={{
-          headerTitle: "",
-        }}
-      />
+      <Stack.Screen name="Custom" component={Custom} options={{}} />
       <Stack.Screen
         name="Task List info"
         component={TaskListInfo}

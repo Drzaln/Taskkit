@@ -1,47 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-const green = {
-  mainColor: "#BAE2A7",
-  textColor: "#2B6735",
-};
-const lightBlue = {
-  mainColor: "#A7DEE2",
-  textColor: "#2B6367",
-};
-const pink = {
-  mainColor: "#E2A7A7",
-  textColor: "#672B2B",
-};
-const purple = {
-  mainColor: "#AFA7E2",
-  textColor: "#332B67",
-};
-const yellow = {
-  mainColor: "#FEEAC3",
-  textColor: "#A38787",
-};
-const givry = {
-  mainColor: "#F7D2BF",
-  textColor: "#1C0060",
-};
-const dodgerBlue = {
-  mainColor: "#4293FF",
-  textColor: "#fff",
-};
-const zest = {
-  mainColor: "#E17A2D",
-  textColor: "#37003E",
-};
-export const colorThemes = [
-  green,
-  purple,
-  yellow,
-  pink,
-  lightBlue,
-  dodgerBlue,
-  zest,
-  givry,
-];
-
+import { sortKeys, sortTasks } from "../utils/sort";
+import { green } from "./themes";
 export interface taskList {
   [taskListId: string]: {
     name: string;
@@ -58,6 +17,7 @@ export interface tasks {
     date: number | null;
     completed: boolean;
     createdAt: number;
+    important: boolean;
   };
 }
 export interface calendar {
@@ -69,26 +29,11 @@ interface stateType {
   calendar: calendar;
 }
 const initialState: stateType = {
-  taskList: {
-    ["0"]: {
-      name: "First Task list",
-      theme: green,
-      tasksIds: ["0"],
-    },
-  },
-  tasks: {
-    ["0"]: {
-      name: "this task",
-      description: "this is a description",
-      taskListId: "0",
-      dateId: null,
-      date: null,
-      completed: false,
-      createdAt: Date.now(),
-    },
-  },
+  tasks: {},
+  taskList: {},
   calendar: {},
 };
+
 interface addListPayLoad {
   name: string;
   theme: typeof green;
@@ -106,7 +51,7 @@ const Tasks = createSlice({
   reducers: {
     ADD_TASK_LIST: (state, action: PayloadAction<addListPayLoad>) => {
       const index = Math.floor(
-        Object.keys(state.taskList).length * Math.random() * 1000
+        Object.keys(state.taskList).length + Math.random() * 1000
       );
       state.taskList[index] = {
         name: action.payload.name,
@@ -124,27 +69,43 @@ const Tasks = createSlice({
     //
     ADD_TASK: (state, action: PayloadAction<addTaskPayload>) => {
       const index = Math.floor(
-        Object.keys(state.tasks).length * Math.random() * 1000
-      );
-      // console.log(index);
+        Object.keys(state.tasks).length + Math.random() * 1000
+      ).toString();
+      const list = action.payload.taskListId;
       state.tasks[index] = {
         name: action.payload.name,
         description: action.payload.description,
-        taskListId: action.payload.taskListId,
+        important: false,
+        taskListId: list,
         completed: false,
         date: action.payload.date,
         createdAt: Date.now(),
-        dateId: index,
+        dateId: action.payload.date === null ? null : parseInt(index),
       };
-      state.taskList[action.payload.taskListId].tasksIds.push(index.toString());
+      state.taskList[list].tasksIds.push(index);
+
       if (action.payload.date) {
         state.calendar[index] = {
           date: action.payload.date,
           taskListId: action.payload.taskListId,
         };
       }
+      const keys = Object.keys(state.tasks);
+      state.tasks = sortTasks(sortKeys(keys, state.tasks));
+      state.taskList[list].tasksIds = sortKeys(
+        state.taskList[list].tasksIds,
+        state.tasks
+      ).sorted;
     },
-    REMOVE_TASK: (state, action: PayloadAction<{ taskId: number }>) => {},
+
+    REMOVE_TASK: (state, action: PayloadAction<{ taskId: string }>) => {
+      const listId = state.tasks[action.payload.taskId].taskListId;
+      state.taskList[listId].tasksIds = state.taskList[listId].tasksIds.filter(
+        (i) => i !== action.payload.taskId
+      );
+      delete state.tasks[action.payload.taskId];
+      // TODO remove task from calendar
+    },
     COMPLETE_TASK: (
       state,
       action: PayloadAction<{ taskId: string; value: boolean }>
@@ -152,12 +113,19 @@ const Tasks = createSlice({
       if (state.tasks[action.payload.taskId])
         state.tasks[action.payload.taskId].completed = action.payload.value;
     },
+    MARK_IMPORTANT: (state, action: PayloadAction<{ taskId: string }>) => {
+      const { taskId } = action.payload;
+      const prev = state.tasks[taskId].important;
+      state.tasks[taskId].important = !prev;
+      console.log(state.tasks[taskId].important);
+    },
   },
 });
 
 export const {
   REMOVE_TASK,
   ADD_TASK,
+  MARK_IMPORTANT,
   ADD_TASK_LIST,
   REMOVE_TASK_LIST,
   COMPLETE_TASK,

@@ -1,20 +1,16 @@
-import { Feather, Fontisto } from "@expo/vector-icons";
-import CheckBox from "./CheckBox";
 import React, { useCallback, useEffect, useState } from "react";
 import { LayoutChangeEvent, StyleSheet, Text, View } from "react-native";
-import {
-  RectButton,
-  TouchableWithoutFeedback,
-} from "react-native-gesture-handler";
+import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 import Animated, {
   interpolate,
   useAnimatedStyle,
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
-import constants from "../constants/constant";
 import { useDispatch } from "react-redux";
+import constants from "../constants/constant";
 import { COMPLETE_TASK } from "../Redux/TaskReducer";
+import CheckBox from "./CheckBox";
 interface TaskCardProps {
   taskListName?: string;
   task: {
@@ -24,6 +20,7 @@ interface TaskCardProps {
     dateId: number | null;
     completed: boolean;
     taskId: string;
+    important?: boolean;
   };
   date?: {
     time: string | null;
@@ -91,11 +88,11 @@ const TaskCard = ({ task, date, theme, taskListName }: TaskCardProps) => {
             >
               {task.name}
             </Text>
-            {date && (
+            {date && date.date ? (
               <Text style={[styles.date, { color: theme.textColor }]}>
                 {date.date}
               </Text>
-            )}
+            ) : null}
           </View>
         </TouchableWithoutFeedback>
         <CheckBox
@@ -181,20 +178,20 @@ const AnimatedPart = ({
     };
   }, [open]);
   const onLayout = useCallback((event: LayoutChangeEvent) => {
-    const h = event.nativeEvent.layout.height;
+    const h = Math.round(event.nativeEvent.layout.height);
     height.value = h;
-    // console.log(event.nativeEvent.layout);
+    console.log(h);
   }, []);
   return (
     <Animated.View style={child}>
       <View onLayout={onLayout} style={{ minHeight: 3 }}>
         <View>
-          {date && (
+          {date && date.date ? (
             <Text style={[styles.date, { color: theme.textColor }]}>
               {date.time}
             </Text>
-          )}
-          {description.length > 0 && (
+          ) : null}
+          {description ? (
             <>
               <View style={styles.separator} />
               <Text
@@ -209,7 +206,7 @@ const AnimatedPart = ({
                 {task.description}
               </Text>
             </>
-          )}
+          ) : null}
           {taskListName && (
             <>
               <View style={styles.separator} />

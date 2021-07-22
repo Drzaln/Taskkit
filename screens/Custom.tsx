@@ -10,7 +10,7 @@ type CustomProps = {
   route: CustomRoute;
 };
 const Custom = ({ navigation, route }: CustomProps) => {
-  LogBox.ignoreLogs(["Non-serializable"]);
+  // LogBox.ignoreLogs(["Non-serializable"]);
   return (
     <View>
       <route.params.component navProps={navigation} />

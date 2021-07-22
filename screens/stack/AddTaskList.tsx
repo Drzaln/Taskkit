@@ -12,7 +12,8 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import constants from "../../constants/constant";
 import { RootState } from "../../Redux/store";
-import { ADD_TASK_LIST, colorThemes } from "../../Redux/TaskReducer";
+import { ADD_TASK_LIST } from "../../Redux/TaskReducer";
+import { colorThemes } from "../../Redux/themes";
 
 interface AddTaskListProps {
   navigation: StackNavigationProp<any>;
