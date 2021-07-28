@@ -14,10 +14,6 @@ const purple = {
   mainColor: "#AFA7E2",
   textColor: "#332B67",
 };
-const yellow = {
-  mainColor: "#FEEAC3",
-  textColor: "#A38787",
-};
 const givry = {
   mainColor: "#F7D2BF",
   textColor: "#1C0060",
@@ -33,7 +29,6 @@ const zest = {
 export const colorThemes = [
   green,
   purple,
-  yellow,
   pink,
   lightBlue,
   dodgerBlue,

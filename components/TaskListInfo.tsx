@@ -3,15 +3,20 @@ import { RouteProp } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { StatusBar } from "expo-status-bar";
 import * as React from "react";
-import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
-import { TouchableNativeFeedback } from "react-native-gesture-handler";
+import {
+  Pressable,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import { useSelector } from "react-redux";
 import constants from "../constants/constant";
 import { prams } from "../Navigation";
-import { findTasksInTaskList, formatDate } from "../Redux/FindById";
 import { RootState } from "../Redux/store";
+import { findTasksInTaskList } from "../utils/FindById";
 import { mapThroughInList } from "../utils/mapThrough";
-import TaskCard from "./TaskCard";
 
 type TaskListInfoProps = {
   route: RouteProp<prams, "Task List info">;
@@ -20,7 +25,7 @@ type TaskListInfoProps = {
 
 const TaskListInfo = ({ route, navigation: navProps }: TaskListInfoProps) => {
   const { name, theme, taskListId } = route.params;
-  const { calendar, tasks, taskList } = useSelector(
+  const { tasks, taskList } = useSelector(
     (state: RootState) => state.TaskReducer
   );
   React.useLayoutEffect(() => {
@@ -59,8 +64,8 @@ const TaskListInfo = ({ route, navigation: navProps }: TaskListInfoProps) => {
           <MaterialIcons name="add-task" size={24} color="white" />
         </Pressable>
       </View>
-      <ScrollView
-        contentContainerStyle={{
+      <SafeAreaView
+        style={{
           backgroundColor: theme.mainColor,
           flexGrow: 1,
         }}
@@ -73,11 +78,11 @@ const TaskListInfo = ({ route, navigation: navProps }: TaskListInfoProps) => {
 
         <View style={styles.container}>
           <Text style={[styles.title, { color: theme.textColor }]}>Tasks</Text>
-          {mapThroughInList({ tasksIds, calendar, theme })}
+          {mapThroughInList({ tasksIds, theme })}
         </View>
 
         <StatusBar backgroundColor={theme.mainColor} style="auto" />
-      </ScrollView>
+      </SafeAreaView>
     </>
   );
 };

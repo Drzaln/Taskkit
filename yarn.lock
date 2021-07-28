@@ -1354,6 +1354,14 @@
     lodash.pick "^4.4.0"
     lodash.template "^4.5.0"
 
+"@gorhom/portal@^1.0.3", "@gorhom/portal@^1.0.7":
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/@gorhom/portal/-/portal-1.0.7.tgz#e27cd40f8e2b6cb742050bcaa00fdcf94f3dfca8"
+  integrity sha512-lDZZ5/cjvg1GHrK6Swljv1EssndiVz0iXsIOpsI8FS6IDyxIDDnzbHQ6ZhLp95jDhDyE0UTUsAjL2PeI2yVKMQ==
+  dependencies:
+    immer "^9.0.3"
+    nanoid "^3.1.23"
+
 "@hapi/address@2.x.x":
   version "2.1.4"
   resolved "https://registry.yarnpkg.com/@hapi/address/-/address-2.1.4.tgz#5d67ed43f3fd41a69d4b9ff7b56e7c0d1d0a81e5"
@@ -3842,6 +3850,11 @@ expo-asset@~8.3.2:
     path-browserify "^1.0.0"
     url-parse "^1.4.4"
 
+expo-blur@^9.0.0:
+  version "9.0.3"
+  resolved "https://registry.yarnpkg.com/expo-blur/-/expo-blur-9.0.3.tgz#5095b5bd04d000f73b351d0e4736767b86b49bbd"
+  integrity sha512-7jMqzo53eg5t9Uc1Tg+yGu9lKL9the4CWAQO0kC6YMhrsDiB13mwOUesC+IScHDTSUKNMGcHI8kN+OmvEWfPig==
+
 expo-constants@~11.0.1:
   version "11.0.1"
   resolved "https://registry.yarnpkg.com/expo-constants/-/expo-constants-11.0.1.tgz#8a33d9702d03289ab68d6de2bbeb2bbc9654734c"
@@ -3872,6 +3885,11 @@ expo-font@~9.2.1:
   dependencies:
     expo-modules-core "~0.2.0"
     fontfaceobserver "^2.1.0"
+
+expo-haptics@^9.0.0:
+  version "9.0.0"
+  resolved "https://registry.yarnpkg.com/expo-haptics/-/expo-haptics-9.0.0.tgz#a01605634ff9b8a4dc8023f5430278be874f525b"
+  integrity sha512-jBYgclyBVuGiqFPxdYSpIE5OEpWodu1B8fsqDLVIOWjdACnKVGsaBpSF6W4Xq0wVRvoak7C4Oz7ISV08rtPMOw==
 
 expo-keep-awake@~9.2.0:
   version "9.2.0"
@@ -4601,6 +4619,11 @@ immer@^9.0.1:
   version "9.0.3"
   resolved "https://registry.yarnpkg.com/immer/-/immer-9.0.3.tgz#146e2ba8b84d4b1b15378143c2345559915097f4"
   integrity sha512-mONgeNSMuyjIe0lkQPa9YhdmTv8P19IeHV0biYhcXhbd5dhdB9HSK93zBpyKjp6wersSUgT5QyU0skmejUVP2A==
+
+immer@^9.0.3:
+  version "9.0.5"
+  resolved "https://registry.yarnpkg.com/immer/-/immer-9.0.5.tgz#a7154f34fe7064f15f00554cc94c66cc0bf453ec"
+  integrity sha512-2WuIehr2y4lmYz9gaQzetPR2ECniCifk4ORaQbU3g5EalLt+0IVTosEPJ5BoYl/75ky2mivzdRzV8wWgQGOSYQ==
 
 immutable@^4.0.0-rc.12:
   version "4.0.0-rc.12"
@@ -6246,7 +6269,7 @@ nan@^2.12.1:
   resolved "https://registry.yarnpkg.com/nan/-/nan-2.14.2.tgz#f5376400695168f4cc694ac9393d0c9585eeea19"
   integrity sha512-M2ufzIiINKCuDfBSAUr1vWQ+vuVcA9kqx8JJUsbQi6yf1uGRyb7HfpdfUr5qLXf3B/t8dPvcjhKMmlfnP47EzQ==
 
-nanoid@^3.1.15:
+nanoid@^3.1.15, nanoid@^3.1.20, nanoid@^3.1.23:
   version "3.1.23"
   resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.1.23.tgz#f744086ce7c2bc47ee0a8472574d5c78e4183a81"
   integrity sha512-FiB0kzdP0FFVGDKlRLEQ1BgDzU87dy5NnzjeW9YZNt+/c3+q82EQDUwniSAUxp/F0gFNI1ZhKU1FqYsMuqZVnw==
@@ -7016,6 +7039,17 @@ react-native-gesture-handler@~1.10.2:
     hoist-non-react-statics "^3.3.0"
     invariant "^2.2.4"
     prop-types "^15.7.2"
+
+react-native-hold-menu@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/react-native-hold-menu/-/react-native-hold-menu-0.1.0.tgz#64eee9579c2a553695c897d96a94f3da7cee1721"
+  integrity sha512-dUuX3Wb5DTs+G3PhUxR2iTE41yrMQQ0RH6ds0ueLNT9RRxt3S1P5jGH3srVHn5K+1yOLO2uiydNRMeSiBqBx3w==
+  dependencies:
+    "@gorhom/portal" "^1.0.3"
+    expo-blur "^9.0.0"
+    expo-haptics "^9.0.0"
+    lodash.isequal "^4.5.0"
+    nanoid "^3.1.20"
 
 react-native-iphone-x-helper@^1.3.0:
   version "1.3.1"

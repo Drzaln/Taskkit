@@ -11,13 +11,13 @@ import {
 } from "react-native";
 import { useSelector } from "react-redux";
 import { prams } from "../Navigation";
-import { findFinishedTasks } from "../Redux/FindById";
 import { RootState } from "../Redux/store";
 import {
   CompletedTaskView,
   TaskListView,
   TaskView,
 } from "../screens/stack/TaskListView";
+import { findFinishedTasks } from "../utils/FindById";
 interface OverviewProps {
   navProps: StackNavigationProp<prams>;
 }
@@ -86,7 +86,7 @@ const Row = (props: RowProps) => {
       <Pressable
         android_ripple={{ color: "rgba(0,0,0,0.2)" }}
         {...props}
-        style={{ flexDirection: "row", flex: 1, paddingVertical: 4 }}
+        style={{ flexDirection: "row", flex: 1, paddingVertical: 1 }}
       >
         <View style={[styles.icon, { backgroundColor: iconColor }]}>
           {Icon}

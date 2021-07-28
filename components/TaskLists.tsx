@@ -30,8 +30,11 @@ const TaskList = ({ navigation: navProps }: TaskListProps) => {
               style={{
                 paddingHorizontal: 20,
                 paddingVertical: 15,
-
-                borderRadius: 10,
+                borderTopLeftRadius: 20,
+                borderTopRightRadius: 8,
+                borderBottomRightRadius: 20,
+                borderBottomLeftRadius: 8,
+                // borderRadius: 10,
               }}
             >
               <Text style={[styles.listName, { color: list.theme.textColor }]}>
@@ -59,7 +62,12 @@ const styles = StyleSheet.create({
   },
   list: {
     marginVertical: 5,
-    borderRadius: 10,
+    // paddingVertical: 5,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 5,
+    borderBottomRightRadius: 20,
+    borderBottomLeftRadius: 5,
+
     overflow: "hidden",
   },
   listName: {

@@ -8,7 +8,6 @@ export const sortTasks = ({ sorted, tasks }: sortTa) => {
   sorted.map((i) => {
     newTasks[i] = tasks[i];
   });
-  console.log(newTasks);
   return newTasks;
 };
 export const sortKeys = (keys: string[], tasks: tasks) => {
@@ -37,7 +36,6 @@ export const sortKeys = (keys: string[], tasks: tasks) => {
       byCreated.push(task.taskId);
     }
   });
-  console.log("byDate:", byDate);
   const sorted = [...byDate, ...byCreated];
   return { sorted, tasks };
 };

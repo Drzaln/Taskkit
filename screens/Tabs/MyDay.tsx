@@ -1,18 +1,10 @@
-import { Text, View, StyleSheet, ScrollView } from "react-native";
-import React from "react";
 import { Feather } from "@expo/vector-icons";
-import constants from "../../constants/constant";
-import TaskCard from "../../components/TaskCard";
+import React from "react";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSelector } from "react-redux";
+import constants from "../../constants/constant";
 import { RootState } from "../../Redux/store";
-import {
-  findTaskById,
-  findTaskListById,
-  formatDate,
-} from "../../Redux/FindById";
-import dayjs from "dayjs";
 import { mapThroughThisDay } from "../../utils/mapThrough";
-import { StatusBar } from "expo-status-bar";
 export default function MyDay() {
   const { taskList, tasks, calendar } = useSelector(
     (state: RootState) => state.TaskReducer
@@ -24,7 +16,7 @@ export default function MyDay() {
       <ScrollView contentContainerStyle={{ flexGrow: 1, paddingBottom: 70 }}>
         <Header />
         <View style={styles.agendaContainer}>
-          {mapThroughThisDay(tasks, taskList, calendar)}
+          {mapThroughThisDay(tasks, taskList)}
         </View>
       </ScrollView>
     </>

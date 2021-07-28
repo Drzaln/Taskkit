@@ -5,12 +5,11 @@ import { Calendar, MultiDotMarking } from "react-native-calendars";
 import { useSelector } from "react-redux";
 import Agenda from "../../components/Agenda";
 import constants from "../../constants/constant";
-import { findMarkDates } from "../../Redux/FindById";
+import { findMarkDates } from "../../utils/FindById";
 import { RootState } from "../../Redux/store";
 import { taskList } from "../../Redux/TaskReducer";
 
 export default function Calendars() {
-  const dates = useSelector((state: RootState) => state.TaskReducer.calendar);
   const [markedDates, setMarkedDates] = React.useState<{
     [date: string]: MultiDotMarking;
   }>({
@@ -21,8 +20,8 @@ export default function Calendars() {
   );
   const tasks = useSelector((state: RootState) => state.TaskReducer.tasks);
   useEffect(() => {
-    setMarkedDates(findMarkDates(dates, taskLists));
-  }, [dates]);
+    setMarkedDates(findMarkDates(tasks, taskLists));
+  }, [tasks]);
   return (
     <>
       {/* <View style={styles.header} /> */}
@@ -42,6 +41,7 @@ export default function Calendars() {
               monthTextColor: "white",
               textDisabledColor: "rgba(255,255,255,0.3)",
               dayTextColor: "white",
+              selectedDayTextColor: "black",
             }}
             markingType={"multi-dot"}
             markedDates={markedDates}
@@ -50,7 +50,7 @@ export default function Calendars() {
         </View>
         <View style={styles.agenda}>
           <View style={styles.thumb}></View>
-          <Agenda taskList={taskLists} tasks={tasks} calendar={dates} />
+          <Agenda taskList={taskLists} tasks={tasks} />
         </View>
       </ScrollView>
     </>

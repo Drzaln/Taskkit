@@ -1,48 +1,43 @@
 import * as React from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { findTaskListById, formatDate } from "../Redux/FindById";
-import { calendar, taskList, tasks } from "../Redux/TaskReducer";
+import { taskList, tasks } from "../Redux/TaskReducer";
+import { findTaskListById, formatDate } from "../utils/FindById";
 interface AgendaProps {
-  calendar: calendar;
   taskList: taskList;
   tasks: tasks;
 }
 
-export const Agenda = ({ calendar, taskList, tasks }: AgendaProps) => {
-  if (Object.keys(calendar).length !== 0) {
-    return (
-      <View>
-        {Object.keys(tasks).map((v, index) => {
-          const task = tasks[v];
-          if (task.date !== null && !task.completed) {
-            const { date, time } = formatDate(task.date);
-            const { theme } = findTaskListById(task.taskListId, taskList);
-            console.log(date);
-            return (
-              <View style={styles.container} key={index}>
-                <View
-                  style={[
-                    styles.listIndicator,
-                    { backgroundColor: theme.mainColor },
-                  ]}
-                />
-                <View>
-                  <View style={styles.time}>
-                    <Text style={[styles.timeText, { fontSize: 16 }]}>
-                      {date}
-                    </Text>
-                    <Text style={styles.timeText}>{time}</Text>
-                  </View>
-                  <Text style={styles.mainText}>{task.name}</Text>
+export const Agenda = ({ taskList, tasks }: AgendaProps) => {
+  return (
+    <View>
+      {Object.keys(tasks).map((v, index) => {
+        const task = tasks[v];
+        if (task.date !== null && !task.completed) {
+          const { date, time } = formatDate(task.date);
+          const { theme } = findTaskListById(task.taskListId, taskList);
+          return (
+            <View style={styles.container} key={index}>
+              <View
+                style={[
+                  styles.listIndicator,
+                  { backgroundColor: theme.mainColor },
+                ]}
+              />
+              <View>
+                <View style={styles.time}>
+                  <Text style={[styles.timeText, { fontSize: 16 }]}>
+                    {date}
+                  </Text>
+                  <Text style={styles.timeText}>{time}</Text>
                 </View>
+                <Text style={styles.mainText}>{task.name}</Text>
               </View>
-            );
-          }
-        })}
-      </View>
-    );
-  }
-  return <View></View>;
+            </View>
+          );
+        }
+      })}
+    </View>
+  );
 };
 
 export default Agenda;

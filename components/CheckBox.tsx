@@ -1,13 +1,11 @@
 import * as React from "react";
 import { StyleSheet, View, ViewStyle } from "react-native";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
-import Animated, { Easing, withTiming } from "react-native-reanimated";
-import {
+import Animated, {
   useAnimatedStyle,
-  withRepeat,
+  useSharedValue,
   withSpring,
 } from "react-native-reanimated";
-import { useSharedValue } from "react-native-reanimated";
 interface CheckBoxProps extends ViewStyle {
   value: boolean;
   onPress: () => void;

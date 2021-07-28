@@ -5,9 +5,10 @@ import { useSelector } from "react-redux";
 import TaskLists from "../../components/TaskLists";
 import constants from "../../constants/constant";
 import { prams } from "../../Navigation";
-import { findFinishedTasks } from "../../Redux/FindById";
+import { findFinishedTasks } from "../../utils/FindById";
 import { RootState } from "../../Redux/store";
 import { mapThroughTasks } from "../../utils/mapThrough";
+import { SafeAreaView } from "react-native-safe-area-context";
 interface TaskListViewProps {
   navProps: StackNavigationProp<prams>;
 }
@@ -46,16 +47,17 @@ export const TaskView = ({ navProps }: TaskListViewProps) => {
   const keys = Object.keys(tasks);
 
   return (
-    <ScrollView
-      style={styles.container}
-      contentContainerStyle={{ paddingBottom: 90 }}
+    //TODO check other safeAreaViews
+    <SafeAreaView
+      style={[styles.container, { paddingBottom: 90 }]}
+      // contentContainerStyle={{ paddingBottom: 90 }}
     >
       {keys.length === 0 ? (
         <Text>There's no Tasks</Text>
       ) : (
         mapThroughTasks(tasks, taskList, false, true)
       )}
-    </ScrollView>
+    </SafeAreaView>
   );
 };
 export const CompletedTaskView = ({ navProps }: TaskListViewProps) => {

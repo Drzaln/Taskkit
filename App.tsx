@@ -1,12 +1,12 @@
+import { Feather } from "@expo/vector-icons";
+import { PortalProvider } from "@gorhom/portal";
 import React from "react";
-import { View } from "react-native";
+import { HoldMenuProvider } from "react-native-hold-menu";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Provider } from "react-redux";
 import useCachedResources from "./hooks/useCachedResources";
 import Navigation from "./Navigation";
 import store from "./Redux/store";
-import { HoldMenuProvider } from "react-native-hold-menu";
-import { Feather } from "@expo/vector-icons";
 export default function App() {
   const isLoadingComplete = useCachedResources();
 

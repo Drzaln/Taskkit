@@ -1,6 +1,14 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { LayoutChangeEvent, StyleSheet, Text, View } from "react-native";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import {
+  LayoutChangeEvent,
+  LayoutRectangle,
+  StyleSheet,
+  Text,
+  Vibration,
+  View,
+} from "react-native";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
+import { HoldItem } from "react-native-hold-menu";
 import Animated, {
   interpolate,
   useAnimatedStyle,
@@ -10,6 +18,7 @@ import Animated, {
 import { useDispatch } from "react-redux";
 import constants from "../constants/constant";
 import { COMPLETE_TASK } from "../Redux/TaskReducer";
+import { deleteTask, markTaskAsImportant } from "../utils/dispatchs";
 import CheckBox from "./CheckBox";
 interface TaskCardProps {
   taskListName?: string;
@@ -31,12 +40,18 @@ interface TaskCardProps {
     textColor: string;
   };
 }
-
 const TaskCard = ({ task, date, theme, taskListName }: TaskCardProps) => {
   const [open, setOpen] = useState(false);
+  const [p, setP] = useState<LayoutRectangle>({
+    width: 0,
+    height: 0,
+    x: 0,
+    y: 0,
+  });
   const [checkBox, setCheckBox] = useState(task.completed);
   const minHeight = useSharedValue(70);
   const opacity = useSharedValue(task.completed ? 0.7 : 1);
+
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(COMPLETE_TASK({ taskId: task.taskId, value: checkBox }));
@@ -47,7 +62,7 @@ const TaskCard = ({ task, date, theme, taskListName }: TaskCardProps) => {
     } else {
       minHeight.value = withSpring(70, { damping: 14, mass: 0.3 });
     }
-    opacity.value = withSpring(task.completed ? 0.7 : 1);
+    opacity.value = withSpring(task.completed ? 0.6 : 1);
   }, [open, task.completed]);
   const card = useAnimatedStyle(() => {
     return {
@@ -56,63 +71,102 @@ const TaskCard = ({ task, date, theme, taskListName }: TaskCardProps) => {
     };
   }, [open, task.completed]);
 
+  const methodProps = useMemo(() => {
+    return {
+      "Mark As important": [task.taskId],
+      Delete: [task.taskId],
+    };
+  }, [task]);
+  const holdItems = [
+    // { text: "Edit Task", icon: "edit", isTitle: true, onPress: () => {} },
+    {
+      text: "Mark As important",
+      icon: "star",
+      onPress: (id: any) => {
+        markTaskAsImportant(id);
+      },
+    },
+    {
+      text: "Delete",
+      icon: "trash",
+      isDestructive: true,
+      onPress: (id: any) => {
+        deleteTask(id);
+      },
+    },
+  ];
+
   return (
-    <Animated.View
-      style={[styles.container, { backgroundColor: theme.mainColor }, card]}
-    >
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
+    <HoldItem items={holdItems} actionParams={methodProps}>
+      <Animated.View
+        onLayout={() => {}}
+        style={[
+          styles.container,
+          card,
+          {
+            backgroundColor: theme.mainColor,
+            borderWidth: task.important ? 3 : 0,
+            borderColor: theme.textColor,
+            borderStyle: "solid",
+          },
+        ]}
       >
-        <TouchableWithoutFeedback
-          onPress={() => {
-            setOpen((show) => !show);
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
           }}
-          hitSlop={{ top: 10, left: 10, right: 30, bottom: 10 }}
         >
-          <View>
-            <Text
-              style={[
-                styles.name,
-                {
-                  color: theme.textColor,
-                  textDecorationLine: task.completed ? "line-through" : "none",
-                  textDecorationColor: theme.textColor,
-                  textDecorationStyle: "solid",
-                  opacity: task.completed ? 0.8 : 1,
-                },
-              ]}
-            >
-              {task.name}
-            </Text>
-            {date && date.date ? (
-              <Text style={[styles.date, { color: theme.textColor }]}>
-                {date.date}
+          <TouchableWithoutFeedback
+            onPress={() => {
+              setOpen((show) => !show);
+            }}
+            hitSlop={{ top: 10, left: 10, right: 30, bottom: 10 }}
+          >
+            <View>
+              <Text
+                style={[
+                  styles.name,
+                  {
+                    color: theme.textColor,
+                    textDecorationLine: task.completed
+                      ? "line-through"
+                      : "none",
+                    textDecorationColor: theme.textColor,
+                    textDecorationStyle: "solid",
+                    opacity: task.completed ? 0.8 : 1,
+                  },
+                ]}
+              >
+                {task.name}
               </Text>
-            ) : null}
-          </View>
-        </TouchableWithoutFeedback>
-        <CheckBox
-          value={checkBox}
-          onPress={() => {
-            setCheckBox((i) => !i);
-          }}
-          mainColor={theme.mainColor}
-          textColor={theme.textColor}
+              {date && date.date ? (
+                <Text style={[styles.date, { color: theme.textColor }]}>
+                  {date.date}
+                </Text>
+              ) : null}
+            </View>
+          </TouchableWithoutFeedback>
+          <CheckBox
+            value={checkBox}
+            onPress={() => {
+              setCheckBox((i) => !i);
+            }}
+            mainColor={theme.mainColor}
+            textColor={theme.textColor}
+          />
+        </View>
+        <AnimatedPart
+          task={task}
+          open={open}
+          theme={theme}
+          minHeight={minHeight}
+          taskListName={taskListName}
+          date={date}
         />
-      </View>
-      <AnimatedPart
-        task={task}
-        open={open}
-        theme={theme}
-        minHeight={minHeight}
-        taskListName={taskListName}
-        date={date}
-      />
-    </Animated.View>
+      </Animated.View>
+    </HoldItem>
   );
 };
 export default TaskCard;
@@ -180,7 +234,6 @@ const AnimatedPart = ({
   const onLayout = useCallback((event: LayoutChangeEvent) => {
     const h = Math.round(event.nativeEvent.layout.height);
     height.value = h;
-    console.log(h);
   }, []);
   return (
     <Animated.View style={child}>

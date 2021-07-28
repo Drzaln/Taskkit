@@ -56,7 +56,6 @@ export default function AddTask({
           taskListId,
           date: dateSwitch ? date.getTime() : null,
         };
-        console.log(taskData);
         dispatch(ADD_TASK(taskData));
         navProps.goBack();
       } else {
