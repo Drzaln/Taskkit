@@ -9,11 +9,11 @@ interface TaskListProps {
 }
 const TaskList = ({ navigation: navProps }: TaskListProps) => {
   const lists = useSelector((state: RootState) => state.TaskReducer.taskList);
-
+  const keys = Object.keys(lists);
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Task Lists</Text>
-      {Object.keys(lists).map((listId, index) => {
+      {keys.length !== 0 && <Text style={styles.title}>Task Lists</Text>}
+      {keys.map((listId, index) => {
         const list = { ...lists[listId], taskListId: listId };
         return (
           <View

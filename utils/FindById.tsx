@@ -24,6 +24,14 @@ export const findTasksInTaskList = (
   return taskArr;
 };
 
+export const findTaskListByName = (name: string, taskLists: taskList) => {
+  const a = Object.keys(taskLists).map((i) => {
+    if (taskLists[i].name === name) {
+      return i;
+    }
+  });
+  return a.find((i) => i !== undefined);
+};
 export const formatDate = (utc: number | null) => {
   if (utc) {
     const time = dayjs(utc).format("h:mm A");

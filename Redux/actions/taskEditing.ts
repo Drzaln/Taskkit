@@ -24,7 +24,6 @@ export const ADD_TASK = (
     completed: false,
     date: action.payload.date,
     createdAt: Date.now(),
-    dateId: action.payload.date === null ? null : parseInt(index),
   };
   state.taskList[list].tasksIds.push(index);
 

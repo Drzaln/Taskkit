@@ -1,4 +1,5 @@
 import { StyleSheet } from "react-native";
+import { colorThemes } from "./themes";
 
 const constants = {
   colors: {
@@ -36,4 +37,23 @@ export const globalStyles = StyleSheet.create({
     color: "white",
   },
 });
+export const defaultTaskLists = [
+  {
+    name: "Personal",
+    theme: colorThemes[Math.floor(Math.random() * colorThemes.length)],
+  },
+  {
+    name: "School",
+    theme: colorThemes[Math.floor(Math.random() * colorThemes.length)],
+  },
+  {
+    name: "Shopping list",
+    theme: colorThemes[Math.floor(Math.random() * colorThemes.length)],
+  },
+  {
+    name: "Work",
+    theme: colorThemes[Math.floor(Math.random() * colorThemes.length)],
+  },
+];
+
 export default constants;

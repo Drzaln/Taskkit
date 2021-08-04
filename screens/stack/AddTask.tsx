@@ -17,10 +17,12 @@ import {
 } from "react-native-gesture-handler";
 import { useDispatch, useSelector } from "react-redux";
 import { DateForm } from "../../components/Forms";
-import constants from "../../constants/constant";
+import constants, { defaultTaskLists } from "../../constants/constant";
+import { colorThemes } from "../../constants/themes";
 import { RootState } from "../../Redux/store";
-import { ADD_TASK } from "../../Redux/TaskReducer";
+import { ADD_TASK, ADD_TASK_PREMADE_TASKLIST } from "../../Redux/TaskReducer";
 import { prams } from "../../StackNav";
+import { findTaskListByName } from "../../utils/FindById";
 
 type AddTaskProps = {
   route: RouteProp<prams, "Add Task">;
@@ -48,28 +50,54 @@ export default function AddTask({
   );
   const dispatch = useDispatch();
   const lists = useSelector((state: RootState) => state.TaskReducer.taskList);
-  const [taskListId, setTaskListId] = React.useState(Object.keys(lists)[0]);
+  const [taskListId, setTaskListId] = React.useState<string | undefined>(
+    Object.keys(lists)[0]
+  );
+  const [premade, setPremade] = React.useState<
+    { name: string; theme: typeof colorThemes[0] } | undefined
+  >(undefined);
   const [push, setPush] = React.useState(false);
+  const addToDB = (id: string) => {
+    if (taskListId) {
+      const taskData = {
+        name,
+        description,
+        taskListId: id,
+        date: dateSwitch ? date.getTime() : null,
+      };
+      dispatch(ADD_TASK(taskData));
+      navProps.goBack();
+    }
+  };
   React.useEffect(() => {
+    if (!push) {
+      return;
+    }
     if (listId) {
-      setTaskListId(listId);
+      addToDB(listId);
     }
 
-    if (push) {
-      if (name.length > 0) {
-        const taskData = {
-          name,
-          description,
-          taskListId,
-          date: dateSwitch ? date.getTime() : null,
-        };
-        dispatch(ADD_TASK(taskData));
-        navProps.goBack();
-      } else {
-        setPush(false);
-        Alert.alert("Missing", "The name filed is empty");
-      }
+    if (name.length < 0) {
+      Alert.alert("Missing", "The name filed is empty");
+      setPush(false);
+      return;
     }
+    if (premade) {
+      const task = {
+        name,
+        description,
+        date: dateSwitch ? date.getTime() : null,
+      };
+      dispatch(ADD_TASK_PREMADE_TASKLIST({ list: premade, task }));
+      navProps.goBack();
+      return;
+    }
+    if (typeof taskListId === "undefined") {
+      Alert.alert("Missing", "No task list provided");
+      setPush(false);
+      return;
+    }
+    addToDB(taskListId);
   }, [push]);
   React.useLayoutEffect(
     () =>
@@ -110,7 +138,7 @@ export default function AddTask({
     [navProps]
   );
   return (
-    <ScrollView>
+    <ScrollView contentContainerStyle={{ flexGrow: 1, paddingBottom: 80 }}>
       <View style={[styles.header, { backgroundColor: backgroundColor }]}>
         <View style={{ display: "flex" }}>
           <Text
@@ -225,6 +253,7 @@ export default function AddTask({
                   key={index}
                   onPress={() => {
                     setTaskListId(list);
+                    setPremade(undefined);
                   }}
                 >
                   <View
@@ -252,6 +281,57 @@ export default function AddTask({
                 </TouchableWithoutFeedback>
               ))}
             </View>
+            <View>
+              <Text style={{ color: "#757575", marginTop: 0, fontSize: 15 }}>
+                Premade lists:
+              </Text>
+
+              <View
+                style={{
+                  flexDirection: "row",
+                  flexWrap: "wrap",
+                  paddingTop: 10,
+                }}
+              >
+                {defaultTaskLists.map((list, index) => {
+                  const id = findTaskListByName(list.name, lists);
+                  if (typeof id === "undefined") {
+                    return (
+                      <TouchableWithoutFeedback
+                        key={index}
+                        onPress={() => {
+                          setTaskListId(undefined);
+                          setPremade(list);
+                        }}
+                      >
+                        <View
+                          style={[
+                            styles.listContainer,
+                            {
+                              backgroundColor: list.theme.mainColor,
+                              borderColor:
+                                list.name === premade?.name
+                                  ? list.theme.textColor
+                                  : "transparent",
+                            },
+                          ]}
+                        >
+                          <Text
+                            style={{
+                              fontFamily: "Gilroy-Medium",
+                              fontSize: 16,
+                              color: list.theme.textColor,
+                            }}
+                          >
+                            {list.name}
+                          </Text>
+                        </View>
+                      </TouchableWithoutFeedback>
+                    );
+                  }
+                })}
+              </View>
+            </View>
           </View>
         )}
       </View>
@@ -262,6 +342,7 @@ export default function AddTask({
 const styles = StyleSheet.create({
   header: {
     // paddingTop: 10,
+    flex: 1,
     paddingBottom: 60,
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
