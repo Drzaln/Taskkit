@@ -1,22 +1,17 @@
-import { MaterialIcons } from "@expo/vector-icons";
+import { Feather, MaterialIcons } from "@expo/vector-icons";
 import { RouteProp } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { StatusBar } from "expo-status-bar";
 import * as React from "react";
-import {
-  Pressable,
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { Pressable, SafeAreaView, StyleSheet, Text, View } from "react-native";
 import { useSelector } from "react-redux";
-import constants from "../constants/constant";
-import { prams } from "../Navigation";
+import constants, { noShadowHeader } from "../constants/constant";
 import { RootState } from "../Redux/store";
+import { prams } from "../StackNav";
 import { findTasksInTaskList } from "../utils/FindById";
 import { mapThroughInList } from "../utils/mapThrough";
+import { ActionButton } from "./ActionButton";
+import EditTaskList from "./EditTaskList";
 
 type TaskListInfoProps = {
   route: RouteProp<prams, "Task List info">;
@@ -25,13 +20,16 @@ type TaskListInfoProps = {
 
 const TaskListInfo = ({ route, navigation: navProps }: TaskListInfoProps) => {
   const { name, theme, taskListId } = route.params;
+  const [showEditMenu, setShowEditMenu] = React.useState(false);
   const { tasks, taskList } = useSelector(
     (state: RootState) => state.TaskReducer
   );
   React.useLayoutEffect(() => {
     navProps.setOptions({
-      title: name,
-      headerStyle: { backgroundColor: theme.mainColor },
+      headerStyle: {
+        ...noShadowHeader,
+        backgroundColor: theme.mainColor,
+      },
     });
   }, []);
   const tasksIds = findTasksInTaskList(taskListId, tasks, taskList);
@@ -39,15 +37,16 @@ const TaskListInfo = ({ route, navigation: navProps }: TaskListInfoProps) => {
     theme.textColor === "#fff" ? "rgba(0,0,0,0.3)" : theme.textColor;
   return (
     <>
-      <View
-        style={[
-          styles.floating,
-          styles.button,
-          { backgroundColor: theme.mainColor },
-        ]}
-      >
-        <Pressable
-          style={[styles.button, { backgroundColor: buttonColor }]}
+      <EditTaskList
+        taskListName={name}
+        taskListId={taskListId}
+        visible={showEditMenu}
+        setVisible={setShowEditMenu}
+        taskListTheme={theme}
+      />
+      <View style={styles.extra}>
+        <ActionButton
+          style={{ backgroundColor: buttonColor }}
           onPress={() => {
             navProps.push("Add Task", {
               backgroundColor: theme.mainColor,
@@ -55,14 +54,10 @@ const TaskListInfo = ({ route, navigation: navProps }: TaskListInfoProps) => {
               taskListId: taskListId,
             });
           }}
-          android_ripple={{
-            borderless: true,
-            color: "rgba(255,255,255,0.4)",
-            radius: 30,
-          }}
+          rippleColor="rgba(255,255,255,0.4)"
         >
           <MaterialIcons name="add-task" size={24} color="white" />
-        </Pressable>
+        </ActionButton>
       </View>
       <SafeAreaView
         style={{
@@ -71,6 +66,26 @@ const TaskListInfo = ({ route, navigation: navProps }: TaskListInfoProps) => {
         }}
       >
         <View style={[styles.header, { backgroundColor: theme.mainColor }]}>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <Text style={styles.title}>{name}</Text>
+            <View style={{ padding: 4 }}>
+              <Pressable
+                android_ripple={{
+                  color: "rgba(55,55,55,0.5)",
+                  borderless: true,
+                }}
+                onPress={() => setShowEditMenu(true)}
+              >
+                <Feather name="edit" size={25} color={theme.textColor} />
+              </Pressable>
+            </View>
+          </View>
           <Text style={[styles.textNormal, { color: theme.textColor }]}>
             {tasksIds.length} Tasks
           </Text>
@@ -86,6 +101,16 @@ const TaskListInfo = ({ route, navigation: navProps }: TaskListInfoProps) => {
     </>
   );
 };
+export default TaskListInfo;
+interface ActionButtonProps {
+  theme: {
+    mainColor: string;
+    textColor: string;
+  };
+  buttonColor: string;
+  navProps: StackNavigationProp<prams, "Task List info">;
+  taskListId: string;
+}
 const styles = StyleSheet.create({
   header: {
     height: 90,
@@ -116,19 +141,11 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     paddingBottom: 70,
   },
-  floating: {
+  extra: {
     position: "absolute",
     bottom: 84,
     right: 20,
     zIndex: 99,
-  },
-  button: {
-    backgroundColor: "#7A6174",
-    borderRadius: 30,
-    width: 60,
-    height: 60,
-    justifyContent: "center",
-    alignItems: "center",
+    marginBottom: 10,
   },
 });
-export default TaskListInfo;

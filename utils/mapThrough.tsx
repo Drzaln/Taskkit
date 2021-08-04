@@ -1,8 +1,8 @@
 import React, { useCallback } from "react";
-import TaskCard from "../components/TaskCard";
-import { findTaskListById, formatDate } from "./FindById";
-import { taskList, tasks } from "../Redux/TaskReducer";
 import { HoldMenuFlatList } from "react-native-hold-menu";
+import TaskCard from "../components/TaskCard";
+import { taskList, tasks } from "../Redux/TaskReducer";
+import { findTaskListById, formatDate } from "./FindById";
 export const mapThroughTasks = (
   tasks: tasks,
   taskList: taskList,
@@ -43,9 +43,7 @@ export const mapThroughTasks = (
     <HoldMenuFlatList
       renderItem={renderItem}
       data={Object.keys(tasks)}
-      keyExtractor={(i) => i.id}
-      maxToRenderPerBatch={4}
-      windowSize={5}
+      keyExtractor={(i) => i.taskId}
     />
   );
 };
@@ -90,14 +88,14 @@ export const mapThroughInList = ({ tasksIds, theme }: a) => {
         return (
           <TaskCard
             task={item}
-            key={i.index}
+            key={item.taskId}
             date={formatDate(item.date)}
             theme={theme}
           />
         );
       }}
       data={tasksIds}
-      keyExtractor={(i) => i.id}
+      keyExtractor={(i) => i.taskId}
     />
   );
 };

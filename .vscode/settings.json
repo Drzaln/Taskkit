@@ -1,0 +1,11 @@
+{
+  "search.exclude": {
+    "**/.expo": true,
+    "**/.yarn": true
+  },
+  "files.exclude": {
+    "**/.expo": true,
+    "**/.expo-shared": true,
+    "**/.yarn": true
+  }
+}

@@ -1,3 +1,4 @@
+import { useNavigation } from "@react-navigation/native";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   LayoutChangeEvent,
@@ -18,7 +19,7 @@ import Animated, {
 import { useDispatch } from "react-redux";
 import constants from "../constants/constant";
 import { COMPLETE_TASK } from "../Redux/TaskReducer";
-import { deleteTask, markTaskAsImportant } from "../utils/dispatchs";
+import { deleteTask, markTaskAsImportant } from "../utils/dispatches";
 import CheckBox from "./CheckBox";
 interface TaskCardProps {
   taskListName?: string;
@@ -42,12 +43,6 @@ interface TaskCardProps {
 }
 const TaskCard = ({ task, date, theme, taskListName }: TaskCardProps) => {
   const [open, setOpen] = useState(false);
-  const [p, setP] = useState<LayoutRectangle>({
-    width: 0,
-    height: 0,
-    x: 0,
-    y: 0,
-  });
   const [checkBox, setCheckBox] = useState(task.completed);
   const minHeight = useSharedValue(70);
   const opacity = useSharedValue(task.completed ? 0.7 : 1);
@@ -85,6 +80,11 @@ const TaskCard = ({ task, date, theme, taskListName }: TaskCardProps) => {
       onPress: (id: any) => {
         markTaskAsImportant(id);
       },
+    },
+    {
+      text: "Edit",
+      icon: "edit",
+      onPress: (id: any) => {},
     },
     {
       text: "Delete",

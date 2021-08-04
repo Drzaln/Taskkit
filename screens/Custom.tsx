@@ -2,7 +2,7 @@ import { RouteProp } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import * as React from "react";
 import { LogBox, View } from "react-native";
-import { prams } from "../Navigation";
+import { prams } from "../StackNav";
 type CustomNavigation = StackNavigationProp<prams, "Custom">;
 type CustomRoute = RouteProp<prams, "Custom">;
 type CustomProps = {

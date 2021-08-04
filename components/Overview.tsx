@@ -10,13 +10,13 @@ import {
   View,
 } from "react-native";
 import { useSelector } from "react-redux";
-import { prams } from "../Navigation";
 import { RootState } from "../Redux/store";
 import {
   CompletedTaskView,
   TaskListView,
   TaskView,
 } from "../screens/stack/TaskListView";
+import { prams } from "../StackNav";
 import { findFinishedTasks } from "../utils/FindById";
 interface OverviewProps {
   navProps: StackNavigationProp<prams>;

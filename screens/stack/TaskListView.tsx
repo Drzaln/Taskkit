@@ -4,11 +4,11 @@ import { ScrollView, StyleSheet, Text } from "react-native";
 import { useSelector } from "react-redux";
 import TaskLists from "../../components/TaskLists";
 import constants from "../../constants/constant";
-import { prams } from "../../Navigation";
 import { findFinishedTasks } from "../../utils/FindById";
 import { RootState } from "../../Redux/store";
 import { mapThroughTasks } from "../../utils/mapThrough";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { prams } from "../../StackNav";
 interface TaskListViewProps {
   navProps: StackNavigationProp<prams>;
 }
@@ -66,20 +66,17 @@ export const CompletedTaskView = ({ navProps }: TaskListViewProps) => {
       title: "Finished Tasks",
     });
   }, []);
-  const { tasks, calendar, taskList } = useSelector(
+  const { tasks, taskList } = useSelector(
     (state: RootState) => state.TaskReducer
   );
   const keys = findFinishedTasks(tasks);
   return (
-    <ScrollView
-      style={styles.container}
-      contentContainerStyle={{ paddingBottom: 90 }}
-    >
+    <SafeAreaView style={[styles.container, { paddingBottom: 90 }]}>
       {keys === 0 ? (
         <Text>There's No finished Tasks</Text>
       ) : (
         mapThroughTasks(tasks, taskList, true, true)
       )}
-    </ScrollView>
+    </SafeAreaView>
   );
 };

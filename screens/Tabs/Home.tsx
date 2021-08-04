@@ -3,12 +3,12 @@ import { StatusBar } from "expo-status-bar";
 import * as React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import ActionButton from "../../components/ActionButton";
+import MainActionButton from "../../components/ActionButton";
 import Overview from "../../components/Overview";
 import TaskList from "../../components/TaskLists";
 import constants from "../../constants/constant";
-import { prams } from "../../Navigation";
 import store from "../../Redux/store";
+import { prams } from "../../StackNav";
 
 interface HomeProps {
   navigation: StackNavigationProp<prams>;
@@ -17,7 +17,7 @@ interface HomeProps {
 export default function Home({ navigation: navProps }: HomeProps) {
   return (
     <>
-      <ActionButton
+      <MainActionButton
         firstAction={() => {
           navProps.navigate("Add Task");
         }}

@@ -109,71 +109,85 @@ const AddTaskList = ({ navigation: navProps }: AddTaskListProps) => {
           placeholderTextColor="rgba(255,255,255,0.8)"
         />
       </View>
-      <View style={{ flex: 1, paddingHorizontal: 20 }}>
-        <Text style={[styles.text, { fontSize: 18, color: "gray" }]}>
-          Theme
-        </Text>
-        <View
-          style={{
-            flexDirection: "row",
-            flexWrap: "wrap",
-          }}
-        >
-          {colorThemes.map((theme1, index) => (
-            <Pressable
-              key={index}
-              onPress={() => {
-                setTheme(theme1);
-              }}
-              style={{
-                marginRight: 15,
-                marginTop: 15,
-              }}
-            >
-              <View
-                style={{
-                  width: 45,
-                  height: 45,
-                  marginTop: 10,
-                  padding: 6,
-                  backgroundColor:
-                    theme1 === theme ? "rgba(0,0,0,0.2)" : "transparent",
-                  borderRadius: 10,
-                }}
-              >
-                <View
-                  style={{
-                    backgroundColor: theme1.mainColor,
-                    flex: 1,
-                    transform: [{ rotate: "-45deg" }],
-                    borderColor:
-                      theme1 === theme ? theme.textColor : "transparent",
-                    borderWidth: 3,
-                    borderStyle: "solid",
-                  }}
-                />
-                <View
-                  style={{
-                    flex: 1,
-                    backgroundColor: theme1.textColor,
-                    borderRadius: 0,
-                    transform: [{ rotate: "-45deg" }],
-                    borderColor:
-                      theme1 === theme ? theme.mainColor : "transparent",
-                    borderWidth: 3,
-                    borderStyle: "solid",
-                  }}
-                />
-              </View>
-            </Pressable>
-          ))}
-        </View>
+      <View style={{ paddingHorizontal: 20 }}>
+        <ColorThemesMap setTheme={setTheme} theme={theme} />
       </View>
     </View>
   );
 };
 export default AddTaskList;
+type colorThemesViewProps = {
+  setTheme: React.Dispatch<
+    React.SetStateAction<{
+      mainColor: string;
+      textColor: string;
+    }>
+  >;
+  theme: { mainColor: string; textColor: string };
+};
 
+export const ColorThemesMap = ({ setTheme, theme }: colorThemesViewProps) => {
+  return (
+    <View style={{ flex: 1 }}>
+      <Text style={[styles.text, { fontSize: 18, color: "gray" }]}>Theme</Text>
+      <View
+        style={{
+          flexDirection: "row",
+          flexWrap: "wrap",
+        }}
+      >
+        {colorThemes.map((theme1, index) => (
+          <Pressable
+            key={index}
+            onPress={() => {
+              setTheme(theme1);
+            }}
+            style={{
+              marginRight: 10,
+              marginTop: 10,
+            }}
+          >
+            <View
+              style={{
+                width: 45,
+                height: 45,
+                marginTop: 10,
+                padding: 6,
+                backgroundColor:
+                  theme1 === theme ? "rgba(0,0,0,0.2)" : "transparent",
+                borderRadius: 10,
+              }}
+            >
+              <View
+                style={{
+                  backgroundColor: theme1.mainColor,
+                  flex: 1,
+                  transform: [{ rotate: "-45deg" }],
+                  borderColor:
+                    theme1 === theme ? theme.textColor : "transparent",
+                  borderWidth: 3,
+                  borderStyle: "solid",
+                }}
+              />
+              <View
+                style={{
+                  flex: 1,
+                  backgroundColor: theme1.textColor,
+                  borderRadius: 0,
+                  transform: [{ rotate: "-45deg" }],
+                  borderColor:
+                    theme1 === theme ? theme.mainColor : "transparent",
+                  borderWidth: 3,
+                  borderStyle: "solid",
+                }}
+              />
+            </View>
+          </Pressable>
+        ))}
+      </View>
+    </View>
+  );
+};
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -188,7 +202,6 @@ const styles = StyleSheet.create({
   },
   text: {
     fontFamily: constants.fonts.bold,
-
     marginTop: 20,
     fontSize: 16,
     marginBottom: 5,

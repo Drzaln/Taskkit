@@ -19,3 +19,10 @@ export const ADD_TASK_LIST = (
     tasksIds: [],
   };
 };
+export const EDIT_TASK_LIST = (
+  state: stateType,
+  action: PayloadAction<addListPayLoad & { taskListId: string }>
+) => {
+  state.taskList[action.payload.taskListId].name = action.payload.name;
+  state.taskList[action.payload.taskListId].theme = action.payload.theme;
+};

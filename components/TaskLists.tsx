@@ -2,8 +2,8 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import * as React from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { useSelector } from "react-redux";
-import { prams } from "../Navigation";
 import { RootState } from "../Redux/store";
+import { prams } from "../StackNav";
 interface TaskListProps {
   navigation: StackNavigationProp<prams>;
 }

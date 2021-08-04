@@ -18,9 +18,9 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { DateForm } from "../../components/Forms";
 import constants from "../../constants/constant";
-import { prams } from "../../Navigation";
 import { RootState } from "../../Redux/store";
 import { ADD_TASK } from "../../Redux/TaskReducer";
+import { prams } from "../../StackNav";
 
 type AddTaskProps = {
   route: RouteProp<prams, "Add Task">;
@@ -31,14 +31,21 @@ export default function AddTask({
   route: { params },
 }: AddTaskProps) {
   const listId = params?.taskListId;
+  const taskInfo = params?.taskInfo;
   const textColor = params?.textColor ? params.textColor : "white";
   const backgroundColor = params?.backgroundColor
     ? params.backgroundColor
     : constants.colors.accentColor;
-  const [date, setDate] = React.useState(new Date());
-  const [dateSwitch, setDateSwitch] = React.useState(false);
-  const [name, setName] = React.useState<string>("");
-  const [description, setDescription] = React.useState<string>("");
+  const [date, setDate] = React.useState(
+    taskInfo?.date ? new Date(taskInfo.date) : new Date()
+  );
+  const [dateSwitch, setDateSwitch] = React.useState<boolean>(
+    taskInfo ? typeof taskInfo.date === "number" : false
+  );
+  const [name, setName] = React.useState<string>(taskInfo ? taskInfo.name : "");
+  const [description, setDescription] = React.useState<string>(
+    taskInfo?.description ? taskInfo.description : ""
+  );
   const dispatch = useDispatch();
   const lists = useSelector((state: RootState) => state.TaskReducer.taskList);
   const [taskListId, setTaskListId] = React.useState(Object.keys(lists)[0]);
@@ -113,7 +120,7 @@ export default function AddTask({
               fontSize: 28,
             }}
           >
-            Create New Task
+            {params?.taskInfo ? "Edit Task" : "Create New Task"}
           </Text>
           <Text style={[styles.textLight, { color: textColor }]}>Name</Text>
           <TextInput

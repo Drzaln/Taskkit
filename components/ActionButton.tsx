@@ -1,6 +1,6 @@
 import { Entypo, Feather, MaterialIcons } from "@expo/vector-icons";
 import * as React from "react";
-import { Pressable, StyleSheet, View } from "react-native";
+import { Pressable, StyleSheet, View, ViewProps } from "react-native";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -11,7 +11,7 @@ interface ActionButtonProps {
   secondAction: () => void;
 }
 
-const ActionButton = ({ firstAction, secondAction }: ActionButtonProps) => {
+const MainActionButton = ({ firstAction, secondAction }: ActionButtonProps) => {
   //
   const [open, setOpen] = React.useState(false);
   //
@@ -86,54 +86,57 @@ const ActionButton = ({ firstAction, secondAction }: ActionButtonProps) => {
           </Animated.View>
         </Pressable>
       </View>
-      {/*  */}
 
-      {/*  */}
       <Animated.View
         style={[translateY1Style, styles.extra]}
         pointerEvents={open ? "box-none" : "none"}
       >
-        <View style={[styles.button, { backgroundColor: "#9B9FB5" }]}>
-          <Pressable
-            hitSlop={{ top: 5, left: 5, right: 5, bottom: 5 }}
-            onPress={firstAction}
-            android_ripple={{
-              color: "rgba(0,0,0,0.2)",
-              borderless: true,
-              radius: 30,
-            }}
-          >
-            <MaterialIcons name="add-task" size={24} color="white" />
-          </Pressable>
-        </View>
+        <ActionButton onPress={firstAction}>
+          <MaterialIcons name="add-task" size={24} color="white" />
+        </ActionButton>
       </Animated.View>
 
-      {/*  */}
-
-      {/*  */}
       <Animated.View
         style={[translateY2Style, styles.extra]}
         pointerEvents={open ? "box-none" : "none"}
       >
-        <View style={[styles.button, { backgroundColor: "#B1B7D1" }]}>
-          <Pressable
-            hitSlop={{ top: 5, left: 5, right: 5, bottom: 5 }}
-            onPress={secondAction}
-            android_ripple={{
-              borderless: true,
-              color: "rgba(0,0,0,0.2)",
-              radius: 30,
-            }}
-          >
-            <Entypo name="add-to-list" size={24} color="white" />
-          </Pressable>
-        </View>
+        <ActionButton onPress={secondAction}>
+          <Entypo name="add-to-list" size={24} color="white" />
+        </ActionButton>
       </Animated.View>
     </View>
   );
 };
 
-export default ActionButton;
+interface action extends ViewProps {
+  children: any;
+  onPress: () => void;
+  rippleColor?: string;
+}
+export const ActionButton = ({
+  children,
+  style,
+  onPress,
+  rippleColor,
+}: action) => {
+  return (
+    <View style={[styles.button, style]}>
+      <Pressable
+        hitSlop={{ top: 5, left: 5, right: 5, bottom: 5 }}
+        onPress={onPress}
+        android_ripple={{
+          color: rippleColor ? rippleColor : "rgba(0,0,0,0.2)",
+          borderless: true,
+          radius: 30,
+        }}
+      >
+        {children}
+      </Pressable>
+    </View>
+  );
+};
+
+export default MainActionButton;
 const styles = StyleSheet.create({
   container: {
     position: "absolute",

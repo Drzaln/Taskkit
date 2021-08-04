@@ -74,11 +74,9 @@ const styles = StyleSheet.create({
   },
   thumb: {
     alignSelf: "center",
-    marginBottom: 70,
+    marginBottom: 30,
     width: 40,
     height: 4,
-    backgroundColor: "#C4C4C4",
-    borderRadius: 2,
   },
   calendarContainer: {
     paddingHorizontal: 10,
