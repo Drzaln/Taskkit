@@ -1,7 +1,7 @@
 # Taskkit
 
 A Task management tool for Android and iOS written in **React Native**
-
+![alt text](https://github.com/iskaa02/Taskkit/blob/main/readme.png?raw=true)
 ---
 
 # Features
@@ -27,6 +27,5 @@ A Task management tool for Android and iOS written in **React Native**
 # Installation
 
 The app is not available at the app stores at the moment,
-you can either download the APK file at the releases page
-
-Or you can build the project yourself by cloning this repo and eject then build
+you can build the project yourself by cloning this repo,
+an apk will be available soon at releases page
