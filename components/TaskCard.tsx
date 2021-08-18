@@ -27,7 +27,6 @@ interface TaskCardProps {
     name: string;
     description: string;
     taskListId: string;
-    dateId: number | null;
     completed: boolean;
     taskId: string;
     important?: boolean;

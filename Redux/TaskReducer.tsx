@@ -30,10 +30,12 @@ export interface tasks {
   };
 }
 export interface stateType {
+  username: string;
   taskList: taskList;
   tasks: tasks;
 }
 const initialState: stateType = {
+  username: "",
   tasks: {},
   taskList: {},
 };

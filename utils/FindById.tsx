@@ -57,24 +57,6 @@ interface markedDates {
 }
 
 export const findMarkDates = (tasks: tasks, taskList: taskList) => {
-  // const sameDate: markedDates = {};
-  // Object.keys(calendar).map((i) => {
-  //   const date = calendar[i];
-  //   const dots = {
-  //     key: date.date.toString(),
-  //     color: taskList[date.taskListId].theme.mainColor,
-  //   };
-
-  //   const formatted = dayjs(date.date).format("YYYY-MM-DD");
-  //   if (formatted) {
-  //     if (sameDate[formatted] !== undefined) {
-  //       sameDate[formatted].dots.push(dots);
-  //     } else {
-  //       sameDate[formatted] = { dots: [dots] };
-  //     }
-  //   }
-  // });
-  // return sameDate;
   const thisDay = dayjs(Date.now()).format("YYYY-MM-DD");
   const sameDate: markedDates = {
     [thisDay]: {

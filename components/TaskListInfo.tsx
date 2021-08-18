@@ -21,9 +21,7 @@ type TaskListInfoProps = {
 const TaskListInfo = ({ route, navigation: navProps }: TaskListInfoProps) => {
   const { name, theme, taskListId } = route.params;
   const [showEditMenu, setShowEditMenu] = React.useState(false);
-  const { tasks, taskList } = useSelector(
-    (state: RootState) => state.TaskReducer
-  );
+  const { tasks, taskList } = useSelector((state: RootState) => state);
   React.useLayoutEffect(() => {
     navProps.setOptions({
       headerStyle: {
@@ -38,6 +36,7 @@ const TaskListInfo = ({ route, navigation: navProps }: TaskListInfoProps) => {
   return (
     <>
       <EditTaskList
+        navProps={navProps}
         taskListName={name}
         taskListId={taskListId}
         visible={showEditMenu}

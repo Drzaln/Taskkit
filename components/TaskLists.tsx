@@ -8,7 +8,7 @@ interface TaskListProps {
   navigation: StackNavigationProp<prams>;
 }
 const TaskList = ({ navigation: navProps }: TaskListProps) => {
-  const lists = useSelector((state: RootState) => state.TaskReducer.taskList);
+  const lists = useSelector((state: RootState) => state.taskList);
   const keys = Object.keys(lists);
   return (
     <View style={styles.container}>

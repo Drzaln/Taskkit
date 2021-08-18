@@ -1,6 +1,6 @@
 import { StackNavigationProp } from "@react-navigation/stack";
 import * as React from "react";
-import { ScrollView, StyleSheet, Text } from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSelector } from "react-redux";
 import TaskLists from "../../components/TaskLists";
 import constants from "../../constants/constant";
@@ -41,9 +41,7 @@ export const TaskView = ({ navProps }: TaskListViewProps) => {
       title: "Tasks",
     });
   }, []);
-  const { tasks, taskList } = useSelector(
-    (state: RootState) => state.TaskReducer
-  );
+  const { tasks, taskList } = useSelector((state: RootState) => state);
   const keys = Object.keys(tasks);
 
   return (
@@ -55,7 +53,7 @@ export const TaskView = ({ navProps }: TaskListViewProps) => {
       {keys.length === 0 ? (
         <Text>There's no Tasks</Text>
       ) : (
-        mapThroughTasks(tasks, taskList, false, true)
+        <View>{mapThroughTasks(tasks, taskList, false, true)}</View>
       )}
     </SafeAreaView>
   );
@@ -66,16 +64,14 @@ export const CompletedTaskView = ({ navProps }: TaskListViewProps) => {
       title: "Finished Tasks",
     });
   }, []);
-  const { tasks, taskList } = useSelector(
-    (state: RootState) => state.TaskReducer
-  );
+  const { tasks, taskList } = useSelector((state: RootState) => state);
   const keys = findFinishedTasks(tasks);
   return (
     <SafeAreaView style={[styles.container, { paddingBottom: 90 }]}>
       {keys === 0 ? (
         <Text>There's No finished Tasks</Text>
       ) : (
-        mapThroughTasks(tasks, taskList, true, true)
+        <View>{mapThroughTasks(tasks, taskList, true, true)}</View>
       )}
     </SafeAreaView>
   );

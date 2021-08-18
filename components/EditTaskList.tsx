@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { StackNavigationProp } from "@react-navigation/stack";
 import * as React from "react";
 import {
   KeyboardAvoidingView,
@@ -22,6 +23,7 @@ import { useDispatch } from "react-redux";
 import constants, { globalStyles } from "../constants/constant";
 import { EDIT_TASK_LIST } from "../Redux/TaskReducer";
 import { ColorThemesMap } from "../screens/stack/AddTaskList";
+import { prams } from "../StackNav";
 interface HoldMenuProp {
   visible: boolean;
   setVisible: React.Dispatch<React.SetStateAction<boolean>>;
@@ -31,6 +33,7 @@ interface HoldMenuProp {
   };
   taskListName: string;
   taskListId: string;
+  navProps: StackNavigationProp<prams, "Task List info">;
 }
 const EditTaskList = ({
   visible,
@@ -38,10 +41,12 @@ const EditTaskList = ({
   setVisible,
   taskListName,
   taskListId,
+  navProps,
 }: HoldMenuProp) => {
   const [theme, setTheme] = React.useState(taskListTheme);
   const [name, setName] = React.useState(taskListName);
   const scale = useSharedValue(0.4);
+  const dispatch = useDispatch();
   React.useEffect(() => {
     if (visible) {
       scale.value = withDelay(20, withTiming(1, { duration: 140 }));
@@ -62,13 +67,15 @@ const EditTaskList = ({
     }, 150);
   };
   const submitChanges = () => {
-    useDispatch()(
+    dispatch(
       EDIT_TASK_LIST({
         taskListId,
         theme,
         name,
       })
     );
+    getBack();
+    navProps.goBack();
   };
   return (
     <KeyboardAvoidingView>

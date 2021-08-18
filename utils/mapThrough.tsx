@@ -9,23 +9,26 @@ export const mapThroughTasks = (
   onlyCompleted?: boolean,
   showTaskListName?: boolean
 ) => {
-  const renderItem = useCallback(
-    (i) => {
-      const item = { ...tasks[i.item], taskId: i.item };
-      const TaskListName = showTaskListName
-        ? taskList[item.taskListId].name
-        : undefined;
-      if (onlyCompleted) {
-        return item.completed ? (
-          <TaskCard
-            taskListName={TaskListName}
-            task={item}
-            key={item.taskId}
-            date={formatDate(item.date)}
-            theme={findTaskListById(item.taskListId, taskList).theme}
-          />
-        ) : null;
-      } else {
+  return (
+    <HoldMenuFlatList
+      renderItem={(i) => {
+        const item = { ...tasks[i.item], taskId: i.item };
+        const TaskListName = showTaskListName
+          ? taskList[item.taskListId].name
+          : undefined;
+        if (onlyCompleted) {
+          if (item.completed) {
+            return (
+              <TaskCard
+                taskListName={TaskListName}
+                task={item}
+                key={item.taskId}
+                date={formatDate(item.date)}
+                theme={findTaskListById(item.taskListId, taskList).theme}
+              />
+            );
+          }
+        }
         return (
           <TaskCard
             taskListName={TaskListName}
@@ -35,15 +38,10 @@ export const mapThroughTasks = (
             theme={findTaskListById(item.taskListId, taskList).theme}
           />
         );
-      }
-    },
-    [tasks]
-  );
-  return (
-    <HoldMenuFlatList
-      renderItem={renderItem}
+      }}
       data={Object.keys(tasks)}
       keyExtractor={(i) => i.taskId}
+      listKey="mapping"
     />
   );
 };
@@ -71,7 +69,6 @@ type a = {
     name: string;
     description: string;
     taskListId: string;
-    dateId: number | null;
     completed: boolean;
     date: number | null;
   }[];

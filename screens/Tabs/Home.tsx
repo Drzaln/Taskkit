@@ -3,12 +3,14 @@ import { StatusBar } from "expo-status-bar";
 import * as React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
+import { useSelector } from "react-redux";
 import MainActionButton from "../../components/ActionButton";
 import Overview from "../../components/Overview";
 import TaskList from "../../components/TaskLists";
 import constants from "../../constants/constant";
-import store from "../../Redux/store";
+import { RootState } from "../../Redux/store";
 import { prams } from "../../StackNav";
+import { formatDate } from "../../utils/FindById";
 
 interface HomeProps {
   navigation: StackNavigationProp<prams>;
@@ -43,15 +45,48 @@ export default function Home({ navigation: navProps }: HomeProps) {
 }
 
 const Header = () => {
-  const name = store.getState();
+  const { username, tasks } = useSelector((state: RootState) => state);
+  const [tasksForDay, setTaskForDay] = React.useState<number>(0);
+  const [tasksString, setTaskString] = React.useState(
+    "No tasks left for the day"
+  );
 
+  React.useEffect(() => {
+    let s = 0;
+    Object.keys(tasks).map((i) => {
+      const task = { ...tasks[i], taskId: i };
+      const date = formatDate(task.date);
+      if (formatDate(Date.now()).date === date.date) {
+        s++;
+      }
+    });
+    setTaskForDay(s);
+    switch (tasksForDay) {
+      case 0:
+        setTaskString("No tasks left for the day");
+        break;
+      case 1:
+        setTaskString(`${tasksForDay} Task left for the day`);
+        break;
+
+      case 2:
+      case 3:
+      case 4:
+        setTaskString(`${tasksForDay} Tasks left for the day`);
+        break;
+
+      default:
+        setTaskString(`${tasksForDay} Tasks for the day`);
+        break;
+    }
+  }, [tasks]);
   return (
     <View style={headerStyles.header}>
       <View style={headerStyles.container}>
         <View style={{ display: "flex" }}>
-          <Text style={headerStyles.textNormal}>Good morning</Text>
-          <Text style={headerStyles.title}>Ismael</Text>
-          <Text style={headerStyles.textLight}>3 Tasks for the day</Text>
+          <Text style={headerStyles.textNormal}>Hello there</Text>
+          <Text style={headerStyles.title}>{username}</Text>
+          <Text style={headerStyles.textLight}>{tasksString}</Text>
         </View>
       </View>
     </View>

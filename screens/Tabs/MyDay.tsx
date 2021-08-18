@@ -6,9 +6,7 @@ import constants from "../../constants/constant";
 import { RootState } from "../../Redux/store";
 import { mapThroughThisDay } from "../../utils/mapThrough";
 export default function MyDay() {
-  const { taskList, tasks } = useSelector(
-    (state: RootState) => state.TaskReducer
-  );
+  const { taskList, tasks } = useSelector((state: RootState) => state);
 
   //NOTE - Change this if you change TaskCard
   return (

@@ -53,9 +53,7 @@ const AddTaskList = ({ navigation: navProps }: AddTaskListProps) => {
   const [name, setName] = React.useState<string>("");
   const [theme, setTheme] = React.useState(colorThemes[0]);
   const dispatch = useDispatch();
-  const taskList = useSelector(
-    (state: RootState) => state.TaskReducer.taskList
-  );
+  const taskList = useSelector((state: RootState) => state.taskList);
   const [push, setPush] = React.useState(false);
   const duplicateCheck = () => {
     const a = Object.keys(taskList).map((i) => {

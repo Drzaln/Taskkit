@@ -38,9 +38,7 @@ export type prams = {
 };
 export const Stack = createStackNavigator<prams>();
 export const StackPage = ({ screen }: HomePageProps) => {
-  const taskLists = useSelector(
-    (state: RootState) => state.TaskReducer.taskList
-  );
+  const taskLists = useSelector((state: RootState) => state.taskList);
   const taskList = taskLists["0"];
   return (
     <Stack.Navigator

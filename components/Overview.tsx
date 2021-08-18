@@ -23,9 +23,7 @@ interface OverviewProps {
 }
 
 const Overview = ({ navProps }: OverviewProps) => {
-  const { tasks, taskList } = useSelector(
-    (state: RootState) => state.TaskReducer
-  );
+  const { tasks, taskList } = useSelector((state: RootState) => state);
 
   const tasksListCount = Object.keys(taskList).length;
   const tasksCount = Object.keys(tasks).length;

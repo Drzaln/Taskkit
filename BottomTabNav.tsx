@@ -7,7 +7,10 @@ import {
 } from "@react-navigation/stack";
 import * as React from "react";
 import { StyleSheet } from "react-native";
+import { useSelector } from "react-redux";
+import { RootState } from "./Redux/store";
 import { taskType } from "./Redux/TaskReducer";
+import Onboarding from "./screens/Onboarding";
 import Calendars from "./screens/Tabs/Calendar";
 import Home from "./screens/Tabs/Home";
 import MyDay from "./screens/Tabs/MyDay";
@@ -19,6 +22,10 @@ export interface HomePageProps {
   screen: any;
 }
 const Navigation = () => {
+  const isFirstTime = useSelector((state: RootState) => state.username);
+  if (isFirstTime) {
+    return <Onboarding />;
+  }
   return (
     <NavigationContainer>
       <Tab.Navigator

@@ -15,10 +15,8 @@ export default function Calendars() {
   }>({
     "": { dots: [{ key: "first", color: "" }] },
   });
-  const taskLists = useSelector(
-    (state: RootState) => state.TaskReducer.taskList
-  );
-  const tasks = useSelector((state: RootState) => state.TaskReducer.tasks);
+  const taskLists = useSelector((state: RootState) => state.taskList);
+  const tasks = useSelector((state: RootState) => state.tasks);
   useEffect(() => {
     setMarkedDates(findMarkDates(tasks, taskLists));
   }, [tasks]);

@@ -49,7 +49,7 @@ export default function AddTask({
     taskInfo?.description ? taskInfo.description : ""
   );
   const dispatch = useDispatch();
-  const lists = useSelector((state: RootState) => state.TaskReducer.taskList);
+  const lists = useSelector((state: RootState) => state.taskList);
   const [taskListId, setTaskListId] = React.useState<string | undefined>(
     Object.keys(lists)[0]
   );
