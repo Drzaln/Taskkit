@@ -1,28 +1,21 @@
 import { AntDesign, Feather } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
-import {
-  createStackNavigator,
-  StackNavigationProp,
-} from "@react-navigation/stack";
 import * as React from "react";
-import { StyleSheet } from "react-native";
 import { useSelector } from "react-redux";
 import { RootState } from "./Redux/store";
-import { taskType } from "./Redux/TaskReducer";
 import Onboarding from "./screens/Onboarding";
 import Calendars from "./screens/Tabs/Calendar";
 import Home from "./screens/Tabs/Home";
 import MyDay from "./screens/Tabs/MyDay";
 import { StackPage } from "./StackNav";
-// import Profile from "./screens/Tabs/Profile";
 const Tab = createBottomTabNavigator();
 
 export interface HomePageProps {
   screen: any;
 }
 const Navigation = () => {
-  const isFirstTime = useSelector((state: RootState) => state.username);
+  const isFirstTime = useSelector((state: RootState) => state.username) === "";
   if (isFirstTime) {
     return <Onboarding />;
   }
@@ -63,7 +56,6 @@ const Navigation = () => {
         />
         <Tab.Screen
           name={"Calendar"}
-          // component={AddTask}
           component={Calendars}
           options={{
             tabBarIcon: ({ color }) => (
@@ -71,14 +63,6 @@ const Navigation = () => {
             ),
           }}
         />
-        {/* <Tab.Screen name={"Profile"}
-          component={Profile}
-          options={{
-            tabBarIcon: ({ color }) => (
-              <Feather name="user" size={26} color={color} />
-            ),
-          }}
-        /> */}
       </Tab.Navigator>
     </NavigationContainer>
   );

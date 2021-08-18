@@ -86,6 +86,9 @@ const Tasks = createSlice({
       const keys = Object.keys(state.tasks);
       state.tasks = sortTasks(sortKeys(keys, state.tasks));
     },
+    CHANGE_USERNAME: (state, action: PayloadAction<{ name: string }>) => {
+      state.username = action.payload.name;
+    },
   },
 });
 
@@ -97,6 +100,7 @@ export const {
   REMOVE_TASK,
   EDIT_TASK_LIST,
   ADD_TASK_PREMADE_TASKLIST,
+  CHANGE_USERNAME,
 } = Tasks.actions;
 
 export default Tasks.reducer;
