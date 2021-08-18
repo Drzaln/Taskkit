@@ -22,8 +22,6 @@ A Task management tool for Android and iOS written in **React Native**
 
 - The Project is still in **early development** some features might not work properly
 
----
-
 # Installation
 
 The app is not available at the app stores at the moment,
