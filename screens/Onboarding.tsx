@@ -5,13 +5,18 @@ import PaperOnboarding, {
 import React from "react";
 import {
   Alert,
+  Keyboard,
   KeyboardAvoidingView,
   Pressable,
   StyleSheet,
   Text,
   View,
 } from "react-native";
-import { TextInput } from "react-native-gesture-handler";
+import {
+  ScrollView,
+  TextInput,
+  TouchableWithoutFeedback,
+} from "react-native-gesture-handler";
 import { useDispatch } from "react-redux";
 import constants from "../constants/constant";
 import { CHANGE_USERNAME } from "../Redux/TaskReducer";
@@ -71,6 +76,8 @@ const LastPage = () => {
   const [name, setName] = React.useState("");
   const dispatch = useDispatch();
   const AddUserName = () => {
+    console.log("pressed");
+    Keyboard.dismiss();
     if (name === "") {
       Alert.alert("Missing", "The name filed is empty");
       return;
@@ -78,7 +85,7 @@ const LastPage = () => {
     dispatch(CHANGE_USERNAME({ name }));
   };
   return (
-    <KeyboardAvoidingView>
+    <ScrollView scrollEnabled={false} showsVerticalScrollIndicator={false}>
       <Custom
         title="Final Steps"
         description="add your username to start using the app"
@@ -86,6 +93,8 @@ const LastPage = () => {
       >
         <View style={styles.inputBox}>
           <TextInput
+            returnKeyType="done"
+            onSubmitEditing={AddUserName}
             value={name}
             placeholder="Username"
             style={styles.input}
@@ -93,16 +102,12 @@ const LastPage = () => {
               setName(v);
             }}
           />
-          <Pressable
-            hitSlop={{ right: 10, left: 10, top: 10, bottom: 10 }}
-            onPress={AddUserName}
-            style={styles.button}
-          >
+          <TouchableWithoutFeedback onPress={AddUserName} style={styles.button}>
             <Feather name="check" size={25} />
-          </Pressable>
+          </TouchableWithoutFeedback>
         </View>
       </Custom>
-    </KeyboardAvoidingView>
+    </ScrollView>
   );
 };
 const data: PaperOnboardingItemType[] = [
@@ -165,6 +170,8 @@ const styles = StyleSheet.create({
     marginVertical: 50,
     alignItems: "center",
     justifyContent: "center",
+    zIndex: 99,
+    elevation: 1,
   },
   input: {
     color: "white",
