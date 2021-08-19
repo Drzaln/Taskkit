@@ -48,7 +48,6 @@ export const StackPage = ({ screen }: HomePageProps) => {
           backgroundColor: constants.colors.accentColor,
           // remove header drop shadow
           ...noShadowHeader,
-          height: 80,
         },
         headerBackTitleVisible: false,
         headerTintColor: "#fff",
