@@ -8,6 +8,7 @@ import constants from "../../constants/constant";
 import { findMarkDates } from "../../utils/FindById";
 import { RootState } from "../../Redux/store";
 import { taskList } from "../../Redux/TaskReducer";
+import FocusAwareStatusBar from "../../components/FocusAwareStatusBar";
 
 export default function Calendars() {
   const [markedDates, setMarkedDates] = React.useState<{
@@ -23,6 +24,7 @@ export default function Calendars() {
   return (
     <>
       {/* <View style={styles.header} /> */}
+      <FocusAwareStatusBar style={"light"} backgroundColor={constants.colors.accentColor} />
       <ScrollView
         style={{ backgroundColor: constants.colors.accentColor }}
         contentContainerStyle={{ flexGrow: 1, paddingTop: 30 }}

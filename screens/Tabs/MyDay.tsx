@@ -2,6 +2,7 @@ import { Feather } from "@expo/vector-icons";
 import React from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSelector } from "react-redux";
+import FocusAwareStatusBar from "../../components/FocusAwareStatusBar";
 import constants from "../../constants/constant";
 import { RootState } from "../../Redux/store";
 import { mapThroughThisDay } from "../../utils/mapThrough";
@@ -12,6 +13,7 @@ export default function MyDay() {
   return (
     <>
       <ScrollView contentContainerStyle={{ flexGrow: 1, paddingBottom: 70 }}>
+        <FocusAwareStatusBar style={"light"} backgroundColor={constants.colors.accentColor} />
         <Header />
         <View style={styles.agendaContainer}>
           {mapThroughThisDay(tasks, taskList)}

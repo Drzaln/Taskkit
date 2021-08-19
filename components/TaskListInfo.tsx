@@ -72,7 +72,7 @@ const TaskListInfo = ({ route, navigation: navProps }: TaskListInfoProps) => {
               alignItems: "center",
             }}
           >
-            <Text style={styles.title}>{name}</Text>
+            <Text style={[styles.title, { color: theme.textColor }]}>{name}</Text>
             <View style={{ padding: 4 }}>
               <Pressable
                 android_ripple={{
@@ -86,7 +86,7 @@ const TaskListInfo = ({ route, navigation: navProps }: TaskListInfoProps) => {
             </View>
           </View>
           <Text style={[styles.textNormal, { color: theme.textColor }]}>
-            {tasksIds.length} Tasks
+            {tasksIds.length} {tasksIds.length === 1 ? "Task" : "Tasks"}
           </Text>
         </View>
 
